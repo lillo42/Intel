@@ -10,14 +10,16 @@ class TcpServer : public QTcpServer
 public:
     explicit TcpServer(QObject *parent = 0);
 
+    void start();
+
 signals:
       void onRecebeuDadas(QByteArray dados);
 public slots:
 
 private slots:
-
-private:
-
+    void readRead();
+protected:
+      void incomingConnection(qintptr handle);
 
 };
 

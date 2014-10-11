@@ -33,7 +33,8 @@ SOURCES += main.cpp \
     ImagemController/imagecontroller.cpp \
     ImagemController/imagem.cpp \
     TCP/tcpcontroller.cpp \
-    TCP/tcpserver.cpp
+    TCP/tcpserver.cpp \
+    TCP/client.cpp
 
 HEADERS += \
     IO/gravaimage.h \
@@ -51,4 +52,5 @@ HEADERS += \
     ImagemController/imagecontroller.h \
     ImagemController/imagem.h \
     TCP/tcpcontroller.h \
-    TCP/tcpserver.h
+    TCP/tcpserver.h \
+    TCP/client.h
