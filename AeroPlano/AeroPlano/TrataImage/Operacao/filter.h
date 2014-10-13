@@ -1,19 +1,19 @@
-#ifndef SALEPIMENTA_H
-#define SALEPIMENTA_H
+#ifndef FILTER_H
+#define FILTER_H
 
 #include <opencv2/core/core.hpp>
 #include <opencv/cv.h>
 #include <opencv2/gpu/gpumat.hpp>
 using namespace cv;
 
-class SalEPimenta
+class Filter
 {
 public:
-    SalEPimenta();
+    Filter();
 
-    void aplica(Mat frame);
+    void saltPepper(Mat frame);
 
-    void aplica(gpu::GpuMat frame);
+    void saltPepper(gpu::GpuMat frame);
 };
 
 #endif // SALEPIMENTA_H

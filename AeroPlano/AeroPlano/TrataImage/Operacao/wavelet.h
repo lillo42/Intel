@@ -2,13 +2,16 @@
 #define WAVELET_H
 
 
-#include <opencv2/opencv.hpp>
+#include <cuda.h>
+
+
 #include <iostream>
 #include <vector>
 #include <stdio.h>
 
-#include <opencv2/core/core.hpp>
 #include <opencv/cv.h>
+#include <opencv2/core/core.hpp>
+#include <opencv2/opencv.hpp>
 #include <opencv2/gpu/gpumat.hpp>
 using namespace cv;
 using namespace std;
@@ -26,6 +29,9 @@ public:
 
     // Wavelet transform
     void cvHaarWavelet(Mat &src,Mat &dst,int NIter);
+    void cvHaarWavelet(Mat &src,Mat &dst,int NIter,vector<float> c,vector<float> dh,vector<float> dd,vector<float> dv);
+
+    void cvHaarWavelets(Mat &src, float &c, float &dv, float &dh, float &dd, int x, int y);
 
     void cvHaarWavelet(gpu::GpuMat &src,gpu::GpuMat &dst,int NIter);
 private:

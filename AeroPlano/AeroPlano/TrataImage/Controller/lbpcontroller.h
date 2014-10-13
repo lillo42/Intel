@@ -19,6 +19,7 @@ public:
     explicit LBPController(QObject *parent = 0);
 
     void addProcesa(Imagem frame);
+    void stopThread();
 
     void run();
 
@@ -26,12 +27,13 @@ signals:
     void onTerminouLBP(Imagem frame,int quantidades);
 
 public slots:
-
+    void onCalculatesLBP(float values);
 private:
     QList<Imagem> listaProcessa;
     LBP *lbp;
 
     QWaitCondition sincronizaThread;
+    bool finishedThread;
 
     void processa();
     void executaLBP();

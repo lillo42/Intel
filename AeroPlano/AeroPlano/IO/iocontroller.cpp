@@ -1,45 +1,87 @@
 #include "iocontroller.h"
+
 IOController::IOController(QObject *parent) :
     QObject(parent)
 {
-    grava = new GravaImage();
-    connect(this,SIGNAL(OnGravou(cv::Mat)),this,SIGNAL(OnGravou(cv::Mat)));
-    QThreadPool::globalInstance()->start(grava);
+    this->setAutoDelete(true);
+    setVariable();
 }
 
-int IOController::getContador()
+void IOController::run()
 {
-    return grava->GetContador();
+    QMutex lock;
+    while(!stopThread)
+    {
+        executeSave();
+        lock.lock();
+        if(listFrame.isEmpty())
+            sincronizedThread.wait(&lock);
+        lock.unlock();
+    }
 }
 
-QString IOController::getNomePadrao()
+void IOController::stop()
 {
-    return grava->getNomePadrao();
+    stopThread = true;
+    sincronizedThread.wakeOne();
 }
 
-
-void IOController::SetPath(QString path)
+void IOController::addSave(Mat frame)
 {
-    grava->SetPath(path);
-    le.setPath(path);
+    bool wakeUp = listFrame.empty();
+    listFrame.append(frame);
+    if(wakeUp)
+        sincronizedThread.wakeOne();
 }
 
-QString IOController::GetPath()
+void IOController::save(QString name, int count)
 {
-    return grava->GetPath();
+    saver.save(path,name,count);
 }
 
-void IOController::gravar(QString nome, Mat frame, int quantidade)
+void IOController::save(Mat frame, QString name)
+{
+    string namePath =  path.toStdString() +  "/" + name.toStdString();
+    saver.save(namePath,frame);
+}
+
+QString IOController::getImageName()
+{
+    return defaulName + QString::number(++count);
+}
+
+Mat IOController::readImage(QString path)
 {
 
 }
 
-Mat IOController::leImagem(QString caminho)
+void IOController::executeSave()
 {
-    return le.leImagem(caminho);
+    Mat frame;
+    QString name;
+    while(!listFrame.isEmpty())
+    {
+        frame = listFrame.first();
+        name = getImageName();
+        save(frame,name);
+        listFrame.removeFirst();
+        emit onSaveImage(frame,name);
+    }
 }
 
-Mat IOController::leProximaImage()
+void IOController::setVariable()
 {
-    return le.leProximaImagem();
+    defaulName = "Image_";
+    count = 0;
+    stopThread = false;
+    setDirector();
+}
+
+void IOController::setDirector()
+{
+    QString pathImage =  QDir::currentPath() + "/Image";
+    QDir dirIimage(pathImage);
+    if(!dirIimage.exists())
+        dirIimage.mkdir(".");
+    path = pathImage;
 }

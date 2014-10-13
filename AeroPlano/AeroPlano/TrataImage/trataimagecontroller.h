@@ -8,7 +8,7 @@
 #include <QThreadPool>
 
 #include "Controller/lbpcontroller.h"
-#include "Controller/salepimentacontroller.h"
+#include "Controller/filtercontroller.h"
 #include "Controller/waveletcontroller.h"
 #include "../ImagemController/imagem.h"
 
@@ -23,8 +23,9 @@ class TrataImageController : public QObject, public QRunnable
     Q_OBJECT
 public:
     explicit TrataImageController(QObject *parent = 0);
-
+    ~TrataImageController();
     void addImage(Imagem frame);
+    void stopThread();
 
     void run();
 
@@ -41,9 +42,10 @@ private slots:
 private:
     QList<Imagem> listaProcessa;
     QWaitCondition sincronizaThread;
+    bool finishedThread;
 
     LBPController *lbp;
-    SalEPimentaController *sp;
+    FilterController *filter;
     WaveletController *wavelet;
 
     void criaLBP();
@@ -53,11 +55,7 @@ private:
     void processa();
     void comecaProcessar();
 
-
     void addProcessoThreadPool();
-
-    gpu::GpuMat convertMatToGpuMat(Mat frame);
-    Mat convertGpuMaToMat(gpu::GpuMat frame);
 };
 
 #endif // TRATAIMAGECONTROLLER_H

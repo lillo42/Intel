@@ -4,6 +4,8 @@ LBPController::LBPController(QObject *parent) :
     QObject(parent)
 {
     lbp = new LBP();
+    this->setAutoDelete(true);
+    finishedThread = false;
 }
 
 void LBPController::addProcesa(Imagem frame)
@@ -14,15 +16,26 @@ void LBPController::addProcesa(Imagem frame)
         sincronizaThread.wakeOne();
 }
 
+void LBPController::stopThread()
+{
+    finishedThread = true;
+    sincronizaThread.wakeOne();
+}
+
 void LBPController::run()
 {
     processa();
 }
 
+void LBPController::onCalculatesLBP(float values)
+{
+
+}
+
 void LBPController::processa()
 {
     QMutex lock;
-    forever
+    while(!finishedThread)
     {
         executaLBP();
         lock.lock();

@@ -6,15 +6,36 @@ TrataImageController::TrataImageController(QObject *parent) :
     criaLBP();
     criaSalEPimenta();
     criaWavelet();
+    this->setAutoDelete(true);
+}
+
+TrataImageController::~TrataImageController()
+{
+    this->stopThread();
+    filter->stopThread();
+    lbp->stopThread();
+    wavelet->stopThread();
+
+    QThreadPool::globalInstance()->waitForDone(100);
+
+    delete filter;
+    delete lbp;
+    delete wavelet;
 }
 
 void TrataImageController::addImage(Imagem frame)
 {
     bool acorda = listaProcessa.isEmpty();
-    frame.gpuFrame = convertMatToGpuMat(frame.frame);
+    //frame.gpuFrame = convertMatToGpuMat(frame.frame);
     listaProcessa.append(frame);
     if(acorda)
         sincronizaThread.wakeOne();
+}
+
+void TrataImageController::stopThread()
+{
+    finishedThread = true;
+    sincronizaThread.wakeOne();
 }
 
 void TrataImageController::run()
@@ -34,7 +55,7 @@ void TrataImageController::OnTerminouSalEPimenta(Imagem salPimenta)
 
 void TrataImageController::OnTerminouWavelet(Imagem frame)
 {
-    frame.frame = convertGpuMaToMat(frame.gpuFrame);
+    //frame.frame = convertGpuMaToMat(frame.gpuFrame);
     lbp->addProcesa(frame);
 }
 
@@ -46,8 +67,8 @@ void TrataImageController::criaLBP()
 
 void TrataImageController::criaSalEPimenta()
 {
-    sp = new SalEPimentaController();
-    connect(sp,SIGNAL(onTerminouSalEPimenta(Imagem)),this,SLOT(OnTerminouSalEPimenta(Imagem)));
+    filter = new FilterController();
+    connect(filter,SIGNAL(onTerminouSalEPimenta(Imagem)),this,SLOT(OnTerminouSalEPimenta(Imagem)));
 }
 
 void TrataImageController::criaWavelet()
@@ -59,7 +80,7 @@ void TrataImageController::criaWavelet()
 void TrataImageController::processa()
 {
     QMutex lock;
-    forever
+    while(!finishedThread)
     {
         comecaProcessar();
         lock.lock();
@@ -75,7 +96,7 @@ void TrataImageController::comecaProcessar()
     while(!listaProcessa.empty())
     {
         frame = listaProcessa.first();
-        sp->addProcessa(frame);
+        filter->addProcessa(frame);
         listaProcessa.removeFirst();
     }
 }
@@ -83,17 +104,6 @@ void TrataImageController::comecaProcessar()
 void TrataImageController::addProcessoThreadPool()
 {
     QThreadPool::globalInstance()->start(wavelet);
-    QThreadPool::globalInstance()->start(sp);
+    QThreadPool::globalInstance()->start(filter);
     QThreadPool::globalInstance()->start(lbp);
 }
-
-gpu::GpuMat TrataImageController::convertMatToGpuMat(Mat frame)
-{
-
-}
-
-Mat TrataImageController::convertGpuMaToMat(gpu::GpuMat frame)
-{
-
-}
-

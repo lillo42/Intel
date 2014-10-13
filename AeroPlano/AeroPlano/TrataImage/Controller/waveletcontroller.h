@@ -21,11 +21,13 @@ public:
     explicit WaveletController(QObject *parent = 0);
 
     void addProcessa(Imagem frame);
+    void stopThread();
 
     void run();
 
 signals:
     void onTerminouWavelet(Imagem frame);
+    void onCalculatesPoint(float values);
 public slots:
 
 private:
@@ -33,11 +35,12 @@ private:
 
     Wavelet *w;
 
-    QWaitCondition sincronizaThread;
-    QWaitCondition bufferIsNotEmpty;
+    QWaitCondition sincronizedThread;
+    bool finishedThread;
 
-    void processa();
-    void executaWavelet();
+    void processImage();
+    void executeWavelet();
+    void executeWavelet2();
 
 };
 

@@ -7,12 +7,18 @@ LBP::LBP()
 
 int LBP::Detecta(Mat frame)
 {
-    return 0;
+    Procura(frame);
+    return IMAGENSPOSITIVAS;
+}
+
+int LBP::Detected(float values)
+{
+
 }
 
 void LBP::eliminaRepetidos()
 {
-
+    //PREDICAO = boost.predict()
 }
 
 void LBP::Procura(Mat &Query)

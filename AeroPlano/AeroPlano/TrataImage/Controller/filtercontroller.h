@@ -1,12 +1,12 @@
-#ifndef SALEPIMENTACONTROLLER_H
-#define SALEPIMENTACONTROLLER_H
+#ifndef FILTERCONTROLLER_H
+#define FILTERCONTROLLER_H
 
 #include <QObject>
 #include <QRunnable>
 #include <QMutex>
 #include <QWaitCondition>
 
-#include "../Operacao/salepimenta.h"
+#include "../Operacao/filter.h"
 #include "../../ImagemController/imagem.h"
 
 #include <opencv2/core/core.hpp>
@@ -14,13 +14,14 @@
 #include <opencv2/gpu/gpumat.hpp>
 using namespace cv;
 
-class SalEPimentaController : public QObject,public QRunnable
+class FilterController : public QObject,public QRunnable
 {
     Q_OBJECT
 public:
-    explicit SalEPimentaController(QObject *parent = 0);
+    explicit FilterController(QObject *parent = 0);
 
     void addProcessa(Imagem frame);
+    void stopThread();
 
     void run();
 
@@ -30,13 +31,13 @@ public slots:
 
 private:
     QList<Imagem> listaProcessa;
-    SalEPimenta *sp;
+    Filter *filter;
 
-    QWaitCondition sincronizaThread;
-    QWaitCondition bufferIsNotEmpty;
+    QWaitCondition sincronizedThread;
+    bool finishedThread;
 
-    void processa();
-    void executaSalPimentaLista();
+    void processImage();
+    void executeFilter();
 };
 
-#endif // SALEPIMENTACONTROLLER_H
+#endif // FILTERCONTROLLER_H

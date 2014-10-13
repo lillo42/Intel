@@ -7,8 +7,8 @@
 
 #include "imagem.h"
 #include "../TrataImage/trataimagecontroller.h"
-#include "../AeroPlano/IO/iocontroller.h"
 #include "../TCP/tcpcontroller.h"
+#include "../IO/iocontroller.h"
 
 #include <opencv/cv.h>
 using namespace cv;
@@ -29,6 +29,7 @@ public slots:
 private slots:
     void onTerminouContagem(Imagem frame,int quantidade);
     void onRecebeImage(Mat frame);
+    void onSaveImage(Mat frame, QString name);
 private:
     TrataImageController *trata;
     TcpController *tcp;
@@ -46,6 +47,7 @@ private:
     void processa();
 
     Imagem criaImagem(Mat frame);
+    Imagem criaImagem(Mat frame,QString name);
 
 };
 

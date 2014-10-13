@@ -19,7 +19,7 @@ public slots:
 private slots:
     void readRead();
 protected:
-      void incomingConnection(qintptr handle);
+      //void incomingConnection(qintptr handle);
 
 };
 

@@ -26,12 +26,14 @@ class LBP
 public:
     LBP();
     int Detecta(Mat frame);
+    int Detected(float values);
 
     float PREDICAO;
     unsigned int IMAGENSPOSITIVAS, IMAGENSNEGATIVAS, AMOSTRA;
 
 private:
     CvBoost boost;
+    SVM sv;
     vector<vector <float> > Features;
     vector<DetectFace> faces;
 

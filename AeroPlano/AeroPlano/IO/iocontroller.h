@@ -1,45 +1,60 @@
 #ifndef IOCONTROLLER_H
 #define IOCONTROLLER_H
 
-//QT
 #include <QObject>
-#include <QRunnable>
+#include <QString>
+#include <QDir>
 #include <QMutex>
-#include <QThreadPool>
+#include <QWaitCondition>
+#include <QRunnable>
 
-//Minha Classe
-#include "IO/gravaimage.h"
-#include "IO/leimage.h"
 
-//OpenCV
+#include "save.h"
+#include "read.h"
+
 #include <opencv/cv.h>
+using namespace cv;
 
 class IOController : public QObject, public QRunnable
 {
     Q_OBJECT
-
 public:
     explicit IOController(QObject *parent = 0);
 
-    int getContador();
-    QString getNomePadrao();
+    void run();
 
-    void SetPath(QString path);
-    QString GetPath();
+    void stop();
 
-    void gravar(QString nome, Mat frame, int quantidade);
+    void addSave(Mat frame);
 
-    Mat leImagem(QString caminho);
-    Mat leProximaImage();
+    void save(QString name, int count);
+    void save(Mat frame, QString name);
+
+    QString getImageName();
+
+    Mat readImage(QString path);
+
 signals:
-    void OnGravou(cv::Mat frame);
+    void onSaveImage(Mat frame, QString name);
 public slots:
 
-private slots:
-
 private:
-    GravaImage* grava;
-    LeImage le;
+    QWaitCondition sincronizedThread;
+
+    Save saver;
+    Read read;
+
+    QString defaulName;
+    QString path;
+    int count;
+
+    QList<Mat> listFrame;
+
+    bool stopThread;
+
+    void executeSave();
+    void setVariable();
+    void setDirector();
 };
 
 #endif // IOCONTROLLER_H

@@ -4,6 +4,7 @@ ImageController::ImageController(QObject *parent) :
     QObject(parent)
 {
     criaTrataImageController();
+    criaIOController();
     //criaIOController();
 }
 
@@ -19,7 +20,7 @@ void ImageController::run()
 
 void ImageController::onTerminouContagem(Imagem frame, int quantidade)
 {
-    io->gravar(frame.nome,frame.frame,quantidade);
+    //io->gravar(frame.nome,frame.frame,quantidade);
 }
 
 void ImageController::onRecebeImage(Mat frame)
@@ -27,22 +28,30 @@ void ImageController::onRecebeImage(Mat frame)
     addImageTrata(frame);
 }
 
+void ImageController::onSaveImage(Mat frame, QString name)
+{
+    Imagem i = criaImagem(frame,name);
+    trata->addImage(i);
+}
+
 void ImageController::addThreadPool()
 {
-    QThreadPool::globalInstance()->start(this);
+    QThreadPool::globalInstance()->setMaxThreadCount(10);
+    QThreadPool::globalInstance()->start(io);
     QThreadPool::globalInstance()->start(trata);
-    //QThreadPool::globalInstance()->start(io);
+    QThreadPool::globalInstance()->start(this);
 }
 
 void ImageController::criaTrataImageController()
 {
     trata = new TrataImageController(this);
-    connect(trata,SIGNAL(onTerminouContagem(int)),this,SLOT(onTerminouContagem(int)));
+    connect(trata,SIGNAL(onTerminouContagem(Imagem,int)),this,SLOT(onTerminouContagem(Imagem,int)));
 }
 
 void ImageController::criaIOController()
 {
-    //io = new IOController(this);
+    io = new IOController(this);
+    connect(io,SIGNAL(onSaveImage(Mat,QString)),this,SLOT(onSaveImage(Mat,QString)));
 }
 
 void ImageController::criaTcpController()
@@ -69,7 +78,15 @@ void ImageController::processa()
 Imagem ImageController::criaImagem(Mat frame)
 {
     Imagem i;
-    i.nome = io->getNomePadrao() + QString::number(io->getContador());
+    //i.nome = io->getNomePadrao() + QString::number(io->getContador());
+    i.frame = frame;
+    return i;
+}
+
+Imagem ImageController::criaImagem(Mat frame, QString name)
+{
+    Imagem i;
+    i.nome = name;
     i.frame = frame;
     return i;
 }

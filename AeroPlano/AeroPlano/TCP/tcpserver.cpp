@@ -11,6 +11,6 @@ void TcpServer::readRead()
 
 }
 
-void TcpServer::incomingConnection(qintptr handle)
-{
-}
+//void TcpServer::incomingConnection(qintptr handle)
+//{
+//}
