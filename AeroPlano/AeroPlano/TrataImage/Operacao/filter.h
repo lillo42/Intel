@@ -12,8 +12,6 @@ public:
     Filter();
 
     void saltPepper(Mat frame);
-
-    void saltPepper(gpu::GpuMat frame);
 };
 
 #endif // SALEPIMENTA_H

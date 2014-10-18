@@ -14,8 +14,6 @@ public:
 
     QString nome;
     Mat frame;
-    gpu::GpuMat gpuFrame;
-
 
 };
 

@@ -32,8 +32,6 @@ public:
     void cvHaarWavelet(Mat &src,Mat &dst,int NIter,vector<float> c,vector<float> dh,vector<float> dd,vector<float> dv);
 
     void cvHaarWavelets(Mat &src, float &c, float &dv, float &dh, float &dd, int x, int y);
-
-    void cvHaarWavelet(gpu::GpuMat &src,gpu::GpuMat &dst,int NIter);
 private:
 
     // signum

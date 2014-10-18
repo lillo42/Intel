@@ -46,7 +46,7 @@ void WaveletController::executeWavelet()
     while(!listaProcessa.empty())
     {
         image = listaProcessa.first();
-        w->cvHaarWavelet(image.gpuFrame,image.gpuFrame,1);
+        w->cvHaarWavelet(image.frame,image.frame,1);
         listaProcessa.removeFirst();
         emit onTerminouWavelet(image);
     }
