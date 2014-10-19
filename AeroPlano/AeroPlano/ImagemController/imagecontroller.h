@@ -27,9 +27,9 @@ signals:
 public slots:
 
 private slots:
-    void onTerminouContagem(Imagem frame,int quantidade);
+    void onTerminouContagem(Imagem frame);
     void onRecebeImage(Mat frame);
-    void onSaveImage(Mat frame, QString name);
+
 private:
     TrataImageController *trata;
     TcpController *tcp;

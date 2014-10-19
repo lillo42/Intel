@@ -13,6 +13,7 @@ public:
 
     QString nome;
     Mat frame;
+    int count;
 
 };
 

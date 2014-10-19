@@ -45,7 +45,8 @@ void TrataImageController::run()
 
 void TrataImageController::OnTerminouLBP(Imagem frame,int quantidade)
 {
-    emit onTerminouContagem(frame,quantidade);
+    frame.count = quantidade;
+    emit onTerminouContagem(frame);
 }
 
 void TrataImageController::OnTerminouSalEPimenta(Imagem salPimenta)

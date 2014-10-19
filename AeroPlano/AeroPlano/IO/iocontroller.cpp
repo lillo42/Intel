@@ -26,7 +26,7 @@ void IOController::stop()
     sincronizedThread.wakeOne();
 }
 
-void IOController::addSave(Mat frame)
+void IOController::addSave(Imagem frame)
 {
     bool wakeUp = listFrame.empty();
     listFrame.append(frame);
@@ -34,54 +34,40 @@ void IOController::addSave(Mat frame)
         sincronizedThread.wakeOne();
 }
 
-void IOController::save(QString name, int count)
+void IOController::save(Imagem image)
 {
-    saver.save(path,name,count);
-}
-
-void IOController::save(Mat frame, QString name)
-{
-    string namePath =  path.toStdString() +  "/" + name.toStdString();
-    saver.save(namePath,frame);
+    QString namePath =  path +  "/" + image.nome;
+    saver.save(namePath,image.nome,image.frame,image.count);
 }
 
 QString IOController::getImageName()
 {
-    return defaulName + QString::number(++count);
+    return defaulName + QString::number(++count) + extension;
 }
 
 Mat IOController::readImage(QString path)
 {
-
+    return read.readImage(path.toStdString());
 }
 
 void IOController::executeSave()
 {
-    Mat frame;
+    Imagem frame;
     QString name;
     while(!listFrame.isEmpty())
     {
         frame = listFrame.first();
-        name = getImageName();
-        save(frame,name);
+        save(frame);
         listFrame.removeFirst();
-        emit onSaveImage(frame,name);
     }
 }
 
 void IOController::setVariable()
 {
     defaulName = "Image_";
+    extension = ".jpg";
     count = 0;
     stopThread = false;
-    setDirector();
+    path = QCoreApplication::applicationDirPath() + "/Imagem";
 }
 
-void IOController::setDirector()
-{
-    QString pathImage =  QDir::currentPath() + "/Image";
-    QDir dirIimage(pathImage);
-    if(!dirIimage.exists())
-        dirIimage.mkdir(".");
-    path = pathImage;
-}

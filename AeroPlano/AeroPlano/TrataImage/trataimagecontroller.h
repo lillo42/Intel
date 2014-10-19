@@ -30,7 +30,7 @@ public:
     void run();
 
 signals:
-    void onTerminouContagem(Imagem frame,int quantidade);
+    void onTerminouContagem(Imagem frame);
 
 public slots:
 

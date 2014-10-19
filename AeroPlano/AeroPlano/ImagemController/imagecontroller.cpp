@@ -5,12 +5,13 @@ ImageController::ImageController(QObject *parent) :
 {
     criaTrataImageController();
     criaIOController();
-    //criaIOController();
+    criaTcpController();
 }
 
 void ImageController::start()
 {
     addThreadPool();
+    tcp->start();
 }
 
 void ImageController::run()
@@ -18,20 +19,14 @@ void ImageController::run()
     processa();
 }
 
-void ImageController::onTerminouContagem(Imagem frame, int quantidade)
+void ImageController::onTerminouContagem(Imagem frame)
 {
-    //io->gravar(frame.nome,frame.frame,quantidade);
+    io->addSave(frame);
 }
 
 void ImageController::onRecebeImage(Mat frame)
 {
     addImageTrata(frame);
-}
-
-void ImageController::onSaveImage(Mat frame, QString name)
-{
-    Imagem i = criaImagem(frame,name);
-    trata->addImage(i);
 }
 
 void ImageController::addThreadPool()
@@ -51,13 +46,13 @@ void ImageController::criaTrataImageController()
 void ImageController::criaIOController()
 {
     io = new IOController(this);
-    connect(io,SIGNAL(onSaveImage(Mat,QString)),this,SLOT(onSaveImage(Mat,QString)));
 }
 
 void ImageController::criaTcpController()
 {
     tcp = new TcpController();
     connect(tcp,SIGNAL(onRecebeFrame(Mat)),this,SLOT(onRecebeImage(Mat)));
+
 }
 
 void ImageController::addImageTrata(Imagem image)
@@ -78,7 +73,7 @@ void ImageController::processa()
 Imagem ImageController::criaImagem(Mat frame)
 {
     Imagem i;
-    //i.nome = io->getNomePadrao() + QString::number(io->getContador());
+    i.nome = io->getImageName();
     i.frame = frame;
     return i;
 }

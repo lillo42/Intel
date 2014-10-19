@@ -7,10 +7,11 @@
 #include <QMutex>
 #include <QWaitCondition>
 #include <QRunnable>
-
+#include <QCoreApplication>
 
 #include "save.h"
 #include "read.h"
+#include "../ImagemController/imagem.h"
 
 #include <opencv/cv.h>
 using namespace cv;
@@ -25,17 +26,14 @@ public:
 
     void stop();
 
-    void addSave(Mat frame);
-
-    void save(QString name, int count);
-    void save(Mat frame, QString name);
+    void addSave(Imagem frame);
 
     QString getImageName();
 
     Mat readImage(QString path);
 
 signals:
-    void onSaveImage(Mat frame, QString name);
+
 public slots:
 
 private:
@@ -45,16 +43,17 @@ private:
     Read read;
 
     QString defaulName;
+    QString extension;
     QString path;
     int count;
 
-    QList<Mat> listFrame;
+    QList<Imagem> listFrame;
 
     bool stopThread;
 
     void executeSave();
     void setVariable();
-    void setDirector();
+    void save(Imagem image);
 };
 
 #endif // IOCONTROLLER_H

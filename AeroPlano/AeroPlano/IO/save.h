@@ -4,6 +4,7 @@
 #include <QString>
 #include <QFile>
 #include <QTextStream>
+#include <QCoreApplication>
 
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
@@ -14,9 +15,11 @@ class Save
 public:
     Save();
 
-    void save(QString path, QString imageName ,int count);
+    void save(QString pathName, QString nameImage, Mat frame , int count);
+    void save(QString imageName , int count);
     void save(string path,Mat frame);
 private:
+    QString txtPath;
 
 };
 
