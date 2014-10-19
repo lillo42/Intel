@@ -1,26 +1,32 @@
 #ifndef TCPSERVER_H
 #define TCPSERVER_H
 
+#include <QObject>
 #include <QTcpServer>
-#include <QByteArray>
+#include <QTcpSocket>
+#include <QDebug>
 
-class TcpServer : public QTcpServer
+class TcpServer : public QObject
 {
     Q_OBJECT
 public:
     explicit TcpServer(QObject *parent = 0);
+    void startServer(int port);
 
-    void start();
-
+    int getPort();
 signals:
-      void onRecebeuDadas(QByteArray dados);
+    void reciveDate(QByteArray data,int port);
 public slots:
 
 private slots:
-    void readRead();
-protected:
-      //void incomingConnection(qintptr handle);
-
+    void newConnection();
+    void readReady();
+    void disconnected();
+private:
+    QTcpServer *server;
+    QTcpSocket *socket;
+    int port;
+    void createServer();
 };
 
 #endif // TCPSERVER_H

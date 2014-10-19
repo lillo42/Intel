@@ -4,9 +4,8 @@
 #
 #-------------------------------------------------
 
-QT       += core
-QT       +=network
-QT       -= gui
+QT       += core network gui
+
 
 TARGET = AeroPlano
 CONFIG   += console
@@ -28,13 +27,13 @@ SOURCES += main.cpp \
     ImagemController/imagecontroller.cpp \
     ImagemController/imagem.cpp \
     TCP/tcpcontroller.cpp \
-    TCP/tcpserver.cpp \
-    TCP/client.cpp \
     IO/iocontroller.cpp \
     IO/read.cpp \
     IO/save.cpp \
     TrataImage/Controller/filtercontroller.cpp \
-    TrataImage/Operacao/filter.cpp
+    TrataImage/Operacao/filter.cpp \
+    TCP/tcpserver.cpp \
+    TCP/tcpclient.cpp
 
 HEADERS += \
     TrataImage/trataimagecontroller.h \
@@ -47,10 +46,10 @@ HEADERS += \
     ImagemController/imagecontroller.h \
     ImagemController/imagem.h \
     TCP/tcpcontroller.h \
-    TCP/tcpserver.h \
-    TCP/client.h \
     IO/iocontroller.h \
     IO/read.h \
     IO/save.h \
     TrataImage/Controller/filtercontroller.h \
-    TrataImage/Operacao/filter.h
+    TrataImage/Operacao/filter.h \
+    TCP/tcpserver.h \
+    TCP/tcpclient.h

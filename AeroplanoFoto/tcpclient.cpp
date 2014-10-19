@@ -12,6 +12,11 @@ void TcpClient::star(QString ip, int port)
     socket->waitForConnected();
 }
 
+void TcpClient::createSocket()
+{
+
+}
+
 void TcpClient::send(QByteArray array)
 {
     socket->write(array);
