@@ -25,6 +25,7 @@ private slots:
 private:
     QTcpServer *server;
     QTcpSocket *socket;
+    QByteArray array;
     int port;
     void createServer();
 };

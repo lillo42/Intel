@@ -4,6 +4,10 @@
 #include <QObject>
 #include <QRunnable>
 #include <QThread>
+#include <QMetaType>
+
+#include <QTcpServer>
+#include <QTcpSocket>
 
 #include "imagem.h"
 #include "../TrataImage/trataimagecontroller.h"
@@ -11,24 +15,23 @@
 #include "../IO/iocontroller.h"
 
 #include <opencv/cv.h>
+#include <opencv/highgui.h>
 using namespace cv;
 
 class ImageController : public QObject, public QRunnable
 {
     Q_OBJECT
+
 public:
     explicit ImageController(QObject *parent = 0);
-
-    void start();
     void run();
-
+    void start();
 signals:
 
 public slots:
 
 private slots:
     void onTerminouContagem(Imagem frame);
-    void onRecebeImage(Mat frame);
 
 private:
     TrataImageController *trata;
@@ -42,12 +45,12 @@ private:
     void criaTcpController();
 
     void addImageTrata(Imagem image);
-    void addImageTrata(Mat image);
 
     void processa();
 
     Imagem criaImagem(Mat frame);
     Imagem criaImagem(Mat frame,QString name);
+
 
 };
 

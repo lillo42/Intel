@@ -40,7 +40,6 @@ private:
 
     void processImage();
     void executeWavelet();
-    void executeWavelet2();
 
 };
 

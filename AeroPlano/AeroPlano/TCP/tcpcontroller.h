@@ -8,8 +8,10 @@
 #include <QFile>
 #include <QImage>
 #include <QCoreApplication>
+#include <QList>
 
 #include "tcpserver.h"
+#include "../ImagemController/imagem.h"
 
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
@@ -19,10 +21,11 @@ class TcpController : public QObject
     Q_OBJECT
 public:
     explicit TcpController(QObject *parent = 0);
-
     void start();
+
 signals:
-    void onReciveFrame(Mat frame);
+    void onReciveFrame(Imagem frame);
+    void onReciveQImage(QImage image);
 public slots:
 
 private slots:
@@ -30,14 +33,19 @@ private slots:
 
 private:
     QString textName;
-    QString imageSaveName;
+    QString defaulName;
+    QString extension;
+    QString path;
+    int count;
     QList<TcpServer*> listServes;
 
     QStringList readText();
     void startServers(QList<int> listPort);
 
-    void convertQImageToMat(QImage image, Mat &frame);
     void imageRecive(QByteArray data);
+
+    Imagem createImagem(Mat &frame);
+    void setVariable();
 };
 
 #endif // TCPCONTROLLER_H

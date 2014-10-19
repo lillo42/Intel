@@ -22,6 +22,7 @@ class TrataImageController : public QObject, public QRunnable
 {
     Q_OBJECT
 public:
+
     explicit TrataImageController(QObject *parent = 0);
     ~TrataImageController();
     void addImage(Imagem frame);

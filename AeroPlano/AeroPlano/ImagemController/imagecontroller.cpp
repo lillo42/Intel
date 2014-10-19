@@ -8,15 +8,15 @@ ImageController::ImageController(QObject *parent) :
     criaTcpController();
 }
 
+void ImageController::run()
+{
+    processa();
+}
+
 void ImageController::start()
 {
     addThreadPool();
     tcp->start();
-}
-
-void ImageController::run()
-{
-    processa();
 }
 
 void ImageController::onTerminouContagem(Imagem frame)
@@ -24,15 +24,10 @@ void ImageController::onTerminouContagem(Imagem frame)
     io->addSave(frame);
 }
 
-void ImageController::onRecebeImage(Mat frame)
-{
-    addImageTrata(frame);
-}
 
 void ImageController::addThreadPool()
 {
     QThreadPool::globalInstance()->setMaxThreadCount(10);
-    QThreadPool::globalInstance()->start(io);
     QThreadPool::globalInstance()->start(trata);
     QThreadPool::globalInstance()->start(this);
 }
@@ -40,7 +35,7 @@ void ImageController::addThreadPool()
 void ImageController::criaTrataImageController()
 {
     trata = new TrataImageController(this);
-    connect(trata,SIGNAL(onTerminouContagem(Imagem,int)),this,SLOT(onTerminouContagem(Imagem,int)));
+    connect(trata,SIGNAL(onTerminouContagem(Imagem)),this,SLOT(onTerminouContagem(Imagem)),Qt::DirectConnection);
 }
 
 void ImageController::criaIOController()
@@ -50,9 +45,7 @@ void ImageController::criaIOController()
 
 void ImageController::criaTcpController()
 {
-    tcp = new TcpController();
-    connect(tcp,SIGNAL(onRecebeFrame(Mat)),this,SLOT(onRecebeImage(Mat)));
-
+   tcp = new TcpController();
 }
 
 void ImageController::addImageTrata(Imagem image)
@@ -60,14 +53,18 @@ void ImageController::addImageTrata(Imagem image)
     trata->addImage(image);
 }
 
-void ImageController::addImageTrata(Mat image)
-{
-    addImageTrata(criaImagem(image));
-}
 
 void ImageController::processa()
 {
-
+    while(true)
+    {
+        Mat frame;
+        QThread::sleep(1);
+        frame = io->readNextImage();
+        if(frame.empty())
+            continue;
+        addImageTrata(criaImagem(frame));
+    }
 }
 
 Imagem ImageController::criaImagem(Mat frame)

@@ -32,6 +32,7 @@ void TrataImageController::addImage(Imagem frame)
         sincronizaThread.wakeOne();
 }
 
+
 void TrataImageController::stopThread()
 {
     finishedThread = true;
@@ -40,6 +41,7 @@ void TrataImageController::stopThread()
 
 void TrataImageController::run()
 {
+    addProcessoThreadPool();
     processa();
 }
 
@@ -57,7 +59,7 @@ void TrataImageController::OnTerminouSalEPimenta(Imagem salPimenta)
 void TrataImageController::OnTerminouWavelet(Imagem frame)
 {
     //frame.frame = convertGpuMaToMat(frame.gpuFrame);
-    lbp->addProcesa(frame);
+    //lbp->addProcesa(frame);
 }
 
 void TrataImageController::criaLBP()

@@ -4,7 +4,7 @@ Camera::Camera(QObject *parent) :
     QObject(parent)
 {
     nameFile = QCoreApplication::applicationDirPath() + "/Test.jpg";
-    txtFile = QCoreApplication::applicationDirPath() + "/Image.txt";
+    txtFile = QCoreApplication::applicationDirPath() + "/Port.txt";
 }
 
 void Camera::run()

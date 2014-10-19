@@ -6,6 +6,8 @@
 #include <QDataStream>
 #include <QImage>
 #include <QImageWriter>
+#include <QByteArray>
+#include <QBuffer>
 
 class TcpClient : public QObject
 {

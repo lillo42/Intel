@@ -3,35 +3,12 @@
 IOController::IOController(QObject *parent) :
     QObject(parent)
 {
-    this->setAutoDelete(true);
     setVariable();
-}
-
-void IOController::run()
-{
-    QMutex lock;
-    while(!stopThread)
-    {
-        executeSave();
-        lock.lock();
-        if(listFrame.isEmpty())
-            sincronizedThread.wait(&lock);
-        lock.unlock();
-    }
-}
-
-void IOController::stop()
-{
-    stopThread = true;
-    sincronizedThread.wakeOne();
 }
 
 void IOController::addSave(Imagem frame)
 {
-    bool wakeUp = listFrame.empty();
-    listFrame.append(frame);
-    if(wakeUp)
-        sincronizedThread.wakeOne();
+    save(frame);
 }
 
 void IOController::save(Imagem image)
@@ -50,16 +27,15 @@ Mat IOController::readImage(QString path)
     return read.readImage(path.toStdString());
 }
 
-void IOController::executeSave()
+Mat IOController::readNextImage()
 {
-    Imagem frame;
-    QString name;
-    while(!listFrame.isEmpty())
-    {
-        frame = listFrame.first();
-        save(frame);
-        listFrame.removeFirst();
-    }
+
+    QString imagePath = path + "/" + defaulName+QString::number(count) + extension;
+    QImage image;
+    image.load(imagePath);
+    if(!image.isNull())
+        count++;
+    return cv::Mat(image.height(), image.width(),0, image.bits(), image.bytesPerLine());
 }
 
 void IOController::setVariable()
@@ -67,7 +43,6 @@ void IOController::setVariable()
     defaulName = "Image_";
     extension = ".jpg";
     count = 0;
-    stopThread = false;
     path = QCoreApplication::applicationDirPath() + "/Imagem";
 }
 

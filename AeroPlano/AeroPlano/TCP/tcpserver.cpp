@@ -3,6 +3,7 @@
 TcpServer::TcpServer(QObject *parent) :
     QObject(parent)
 {
+    createServer();
 }
 
 void TcpServer::startServer(int port)
@@ -28,10 +29,14 @@ void TcpServer::newConnection()
 
 void TcpServer::readReady()
 {
-    QByteArray array;
-    socket->waitForReadyRead();
+
+    socket->waitForBytesWritten();
     array.append(socket->readAll());
-    emit reciveDate(array,port);
+    if(array.length() >= 35264)
+    {
+        emit reciveDate(array,port);
+        array.clear();
+    }
 }
 
 void TcpServer::disconnected()

@@ -51,32 +51,3 @@ void WaveletController::executeWavelet()
         emit onTerminouWavelet(image);
     }
 }
-
-void WaveletController::executeWavelet2()
-{
-    float c,dh,dv,dd;
-    Imagem image;
-    int NIter = 1;
-    int width;
-    int height;
-    while(!listaProcessa.empty())
-    {
-        image = listaProcessa.first();
-        width = image.frame.cols;
-        height = image.frame.rows;
-        for (int k = 0; k < NIter; k++)
-        {
-            for (int y = 0; y < (height >> (k + 1)); y++)
-            {
-                for (int x = 0; x< (width >> (k + 1));x++)
-                {
-                    w->cvHaarWavelets(image.frame,c,dv,dh,dd,x,y);
-                    emit onCalculatesPoint(c);
-                    emit onCalculatesPoint(dv);
-                    emit onCalculatesPoint(dh);
-                    emit onCalculatesPoint(dd);
-                }
-            }
-        }
-    }
-}

@@ -3,9 +3,9 @@
 TcpController::TcpController(QObject *parent) :
     QObject(parent)
 {
-    textName = QCoreApplication::applicationDirPath() + "/port.txt";
-    imageSaveName = QCoreApplication::applicationDirPath() + "/imageMat.jpg";
+    setVariable();
 }
+
 
 void TcpController::start()
 {
@@ -15,6 +15,7 @@ void TcpController::start()
         listPort.append(port.toInt());
     startServers(listPort);
 }
+
 
 void TcpController::onReciveData(QByteArray data, int port)
 {
@@ -48,21 +49,31 @@ void TcpController::startServers(QList<int> listPort)
     }
 }
 
-void TcpController::convertQImageToMat(QImage image, Mat &frame)
-{
-    image.save(imageSaveName);
-    frame = imread(imageSaveName.toStdString());
-}
-
 void TcpController::imageRecive(QByteArray data)
 {
     QImage image;
     image.loadFromData(data);
     if(image.isNull())
-        qDebug() << "Image Null";
-    return;
-    Mat frame;
-    convertQImageToMat(image,frame);
+        return;
+    else
+        qDebug() << "Image not Null";
+    QString localSave = path + "/" + defaulName + QString::number(count++) + extension;
+    qDebug() << localSave;
+    image.save(localSave,"JPG");
+}
 
-    emit onReciveFrame(frame);
+Imagem TcpController::createImagem(Mat &frame)
+{
+    Imagem i;
+    i.frame = frame;
+    return i;
+}
+
+void TcpController::setVariable()
+{
+    defaulName = "Image_";
+    extension = ".jpg";
+    count = 0;
+    path = QCoreApplication::applicationDirPath() + "/Imagem";
+    textName = QCoreApplication::applicationDirPath() + "/port.txt";
 }

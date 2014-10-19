@@ -19,10 +19,8 @@ LIBS += -L/usr/local/lib -lopencv_calib3d -lopencv_contrib -lopencv_core -lopenc
 SOURCES += main.cpp \
     TrataImage/trataimagecontroller.cpp \
     TrataImage/Controller/lbpcontroller.cpp \
-    TrataImage/Controller/mrmrcontroller.cpp \
     TrataImage/Controller/waveletcontroller.cpp \
     TrataImage/Operacao/lbp.cpp \
-    TrataImage/Operacao/mrmr.cpp \
     TrataImage/Operacao/wavelet.cpp \
     ImagemController/imagecontroller.cpp \
     ImagemController/imagem.cpp \
@@ -38,10 +36,8 @@ SOURCES += main.cpp \
 HEADERS += \
     TrataImage/trataimagecontroller.h \
     TrataImage/Controller/lbpcontroller.h \
-    TrataImage/Controller/mrmrcontroller.h \
     TrataImage/Controller/waveletcontroller.h \
     TrataImage/Operacao/lbp.h \
-    TrataImage/Operacao/mrmr.h \
     TrataImage/Operacao/wavelet.h \
     ImagemController/imagecontroller.h \
     ImagemController/imagem.h \

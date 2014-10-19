@@ -3,3 +3,8 @@
 Imagem::Imagem()
 {
 }
+
+Imagem::~Imagem()
+{
+
+}

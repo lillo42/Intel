@@ -12,11 +12,6 @@ void TcpClient::star(QString ip, int port)
     socket->waitForConnected();
 }
 
-void TcpClient::createSocket()
-{
-
-}
-
 void TcpClient::send(QByteArray array)
 {
     socket->write(array);
@@ -26,18 +21,15 @@ void TcpClient::send(QByteArray array)
 
 void TcpClient::send(QImage image)
 {
-    if(socket->state() != QTcpSocket::ConnectedState)
-    {
-        qDebug() << "Nao connectado ainda";
-        if(!socket->waitForConnected())
-        {
-            qDebug() << "Nao connectado";
-            return;
-        }
-    }
-    QImageWriter writer;
-    writer.setDevice(socket);
-    writer.setFormat("jpg");
 
-   writer.write(image);
+    QByteArray ba;
+    QBuffer buffer(&ba);
+    buffer.open(QIODevice::WriteOnly);
+    image.save(&buffer, "jpg");
+    send(ba);
+//    QImageWriter writer;
+//    writer.setDevice(socket);
+//    writer.setFormat("jpg");
+
+//   writer.write(image);
 }
