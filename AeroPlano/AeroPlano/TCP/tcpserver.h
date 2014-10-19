@@ -27,7 +27,10 @@ private:
     QTcpSocket *socket;
     QByteArray array;
     int port;
+
     void createServer();
+    void reciveImage();
+    void reciveAnotherFing();
 };
 
 #endif // TCPSERVER_H

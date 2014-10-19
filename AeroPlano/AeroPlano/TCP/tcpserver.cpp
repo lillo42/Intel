@@ -29,14 +29,10 @@ void TcpServer::newConnection()
 
 void TcpServer::readReady()
 {
-
-    socket->waitForBytesWritten();
-    array.append(socket->readAll());
-    if(array.length() >= 35264)
-    {
-        emit reciveDate(array,port);
-        array.clear();
-    }
+    if(port == 20000)
+        reciveImage();
+    else
+        reciveAnotherFing();
 }
 
 void TcpServer::disconnected()
@@ -49,4 +45,19 @@ void TcpServer::createServer()
 {
     server = new QTcpServer();
     connect(server,SIGNAL(newConnection()),this,SLOT(newConnection()));
+}
+
+void TcpServer::reciveImage()
+{
+    array.append(socket->readAll());
+    if(array.length() >= 35264)
+    {
+        emit reciveDate(array,port);
+        array.clear();
+    }
+}
+
+void TcpServer::reciveAnotherFing()
+{
+
 }
