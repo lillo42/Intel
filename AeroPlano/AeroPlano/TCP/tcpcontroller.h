@@ -16,6 +16,7 @@
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
 using namespace cv;
+//TODO: See if is possible add in some list in IOController
 class TcpController : public QObject
 {
     Q_OBJECT
@@ -24,8 +25,7 @@ public:
     void start();
 
 signals:
-    void onReciveFrame(Imagem frame);
-    void onReciveQImage(QImage image);
+
 public slots:
 
 private slots:
@@ -44,7 +44,6 @@ private:
 
     void imageRecive(QByteArray data);
 
-    Imagem createImagem(Mat &frame);
     void setVariable();
 };
 

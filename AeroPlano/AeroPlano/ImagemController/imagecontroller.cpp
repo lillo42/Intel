@@ -74,11 +74,3 @@ Imagem ImageController::criaImagem(Mat frame)
     i.frame = frame;
     return i;
 }
-
-Imagem ImageController::criaImagem(Mat frame, QString name)
-{
-    Imagem i;
-    i.nome = name;
-    i.frame = frame;
-    return i;
-}

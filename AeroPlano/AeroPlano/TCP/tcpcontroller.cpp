@@ -62,12 +62,6 @@ void TcpController::imageRecive(QByteArray data)
     image.save(localSave,"JPG");
 }
 
-Imagem TcpController::createImagem(Mat &frame)
-{
-    Imagem i;
-    i.frame = frame;
-    return i;
-}
 
 void TcpController::setVariable()
 {

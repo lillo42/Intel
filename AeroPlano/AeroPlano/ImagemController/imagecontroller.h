@@ -49,9 +49,6 @@ private:
     void processa();
 
     Imagem criaImagem(Mat frame);
-    Imagem criaImagem(Mat frame,QString name);
-
-
 };
 
 #endif // IMAGECONTROLLER_H
