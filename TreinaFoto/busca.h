@@ -45,6 +45,10 @@ public:
     QDir dirNegativas;
     QDir dirTreinoCascade;
 
+    QDir dirP;
+    QDir dirNP;
+    QDir dirTreino;
+
     CvBoost boost;
 
     // Funções std
@@ -67,6 +71,11 @@ public:
     void treino();
     void teste( Mat& Query );
     void loadBoost();
+
+    void carregaNaoPessoa( QStringList &Lista);
+    void carregaPessoas( QStringList &Lista);
+    void addLista(QDir dir,QStringList &Lista);
+    void carregaTeste(QStringList &Lista);
 
 };
 

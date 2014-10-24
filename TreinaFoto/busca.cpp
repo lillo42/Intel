@@ -14,8 +14,11 @@ Busca::Busca()
     arqCriterio=("criterio.xml");
 
     if (OS_Linux){
-        dir = QString("/home/rsj/ep2/");
+        dir = QString("/home/rafael/Documents/C++/Image");
         dirImagens.append(dir);
+        dirP = QString("../Pessoa");
+        dirNP = QString("../NPessoa");
+        dirTreino = QString("../Teste");
     }
     else {
         //        vector<string> vs;
@@ -70,6 +73,30 @@ void Busca::loadBoost()
     boost.load("criterio.xml");
 }
 
+void Busca::carregaNaoPessoa(QStringList &Lista)
+{
+  addLista(dirNP,Lista);
+}
+
+void Busca::carregaPessoas(QStringList &Lista)
+{
+  addLista(dirP,Lista);
+}
+
+void Busca::addLista(QDir dir, QStringList &Lista)
+{
+    QDir diretorio(dir);
+    QFileInfoList fileList = diretorio.entryInfoList();
+    foreach (const QFileInfo &info, fileList) {
+            Lista.append(QString("%1/%2").arg(diretorio.path()).arg(info.fileName()));
+    }
+}
+
+void Busca::carregaTeste(QStringList &Lista)
+{
+    addLista(dirTreino,Lista);
+}
+
 const string Busca::currentDateTime() {
     time_t     now = time(0);
     struct tm  tstruct;
@@ -85,7 +112,6 @@ void Busca::filterWildCard(QStringList &files, QRegExp rx)
     QDir diretorio(dir);
     QFileInfoList fileList = diretorio.entryInfoList();
     foreach (const QFileInfo &info, fileList) {
-        if (rx.exactMatch(info.fileName()))
             files.append(QString("%1/%2").arg(diretorio.path()).arg(info.fileName()));
     }
 }
@@ -130,7 +156,7 @@ void Busca::padraoLocal(Mat &Origem, Mat &Destino, int Raio, int Vizinhaca)
 
 void Busca::extraiCaracteristicas(Mat &Query)
 {
-    Mat ROI(Size(WIDTH,HEIGHT),CV_32FC1, Scalar::all(0));
+    Mat ROI(Size(Query.cols,Query.rows),CV_32FC1, Scalar::all(0));
     Mat LBP;
     Point roi; // Armazena as coordenadas das Features
     int raio=1; int vizinhaca=8;
@@ -228,7 +254,7 @@ void Busca::teste(Mat& Query)
             string result2 = nome.toUtf8().constData();
 
 
-            if ( PREDICAO > 12 ) {
+            if ( PREDICAO > 5) {
                 df.predicao = PREDICAO; df.ponto = roi;
                 faces.push_back( df );
                 IMAGENSPOSITIVAS++;
