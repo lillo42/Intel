@@ -1,24 +1,24 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2014-10-21T23:02:38
+# Project created by QtCreator 2014-10-26T11:48:36
 #
 #-------------------------------------------------
 
 QT       += core
 
-#QT       -= gui
+QT       -= gui
 
-TARGET = TreinaFoto
+TARGET = TreinaLBP
 CONFIG   += console
 CONFIG   -= app_bundle
 
-LIBS += -L/usr/local/lib -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_ml -lopencv_contrib
-
 TEMPLATE = app
+
+LIBS += -L/usr/local/lib -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_ml -lopencv_contrib
 
 
 SOURCES += main.cpp \
-    busca.cpp
+    treina.cpp
 
 HEADERS += \
-    busca.h
+    treina.h
