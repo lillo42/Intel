@@ -28,6 +28,9 @@
 #define SOFT 2  // soft shrinkage
 #define GARROT 3  // garrot filter
 
+#define WIDTH  32  // cols
+#define HEIGHT 36  // rows
+
 
 using namespace cv;
 using namespace std;
@@ -40,7 +43,7 @@ struct detF {
 class Treina
 {
 public:
-    Treina(int tamanho);
+    Treina();
 
     // Funções std
     vector<vector <float> > Features;
@@ -63,7 +66,7 @@ public:
     void eliminaRepetidos();
     void desenhaRetangulo(Mat &imagem);
 
-    bool loadBoost();
+    void loadBoost();
 
 private:
     QString dirImagens, dir;
@@ -78,7 +81,6 @@ private:
 
 
     string arqCriterio;
-    int tamanhoDefault;
 
     void carregaList(QDir dir, QStringList &Lista);
 
@@ -95,7 +97,7 @@ private:
     // Garrot shrinkage
     float garrot_shrink(float d,float T);
 
-    void cvHaarWavelet(Mat &src,Mat &dst,int NIter);
+    void cvHaarWavelet(Mat &src,Mat &dst,int NIter, int escolha);
 };
 
 #endif // TREINA_H

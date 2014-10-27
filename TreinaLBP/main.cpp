@@ -20,48 +20,38 @@
 using namespace cv;
 using namespace std;
 
-void Teste(Treina &busca, int tamanho);
-void Treino(Treina &busca, int tamanho);
-Mat& GeraMatComTamanhoEspecifico(Mat frame, int tamanho);
-bool PodeAddImage(Mat frame, int tamanho);
+void Teste(Treina &busca);
+void Treino(Treina &busca);
 
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-    int escolha = 2;
+    int escolha = 1;
 
-    cout << "Começando treino geral" << endl;
-    for(int tamanho = 8;tamanho <=128;tamanho=tamanho*2)
-    {
-        Treina t(tamanho);
-
-        if(escolha == 1)
-            Treino(t,tamanho);
-        else if(escolha == 2)
-            Teste(t,tamanho);
-    }
-
-    cout << "Fim do treino geral" << endl;
+    Treina t;
+    if(escolha == 1)
+        Treino(t);
+    else if(escolha == 2)
+        Teste(t);
 
     return a.exec();
 }
 
 
-void Teste(Treina &busca, int tamanho)
+void Teste(Treina &busca)
 {
-    Mat IMG(Size(tamanho,tamanho),CV_32FC1, Scalar::all(0));
+    Mat IMG(Size(WIDTH,HEIGHT),CV_32FC1, Scalar::all(0));
     clock_t tempoInicial3 = clock();
 
     QStringList filesQ;
 
     cout << "Inicio do Localiza -> " << busca.currentDateTime() << endl;
-    cout << "\nLocalizando Faces .... \n" << endl;
+    cout << "\nLocalizando Pessoas .... \n" << endl;
 
     busca.carregaTeste(filesQ);
 
-    if(!busca.loadBoost())
-        return;
+    busca.loadBoost();
     busca.faces.clear();   // Limpa variaveis
 
     for (int j = 0; j < filesQ.length(); j++)
@@ -69,6 +59,8 @@ void Teste(Treina &busca, int tamanho)
 
       string img = filesQ[j].toUtf8().constData();
       Mat imagemQ = imread( img, CV_LOAD_IMAGE_GRAYSCALE);
+      if(imagemQ.empty())
+          continue;
       Mat imagemS = imread( img);
 
       busca.faces.clear();
@@ -96,9 +88,9 @@ void Teste(Treina &busca, int tamanho)
     cout << endl;
 }
 
-void Treino(Treina &busca, int tamanho)
+void Treino(Treina &busca)
 {
-    Mat IMG(Size(tamanho,tamanho),CV_32FC1, Scalar::all(0));
+    Mat IMG(Size(WIDTH,HEIGHT),CV_32FC1, Scalar::all(0));
 
     QStringList filesAP, filesAN;
 
@@ -109,33 +101,32 @@ void Treino(Treina &busca, int tamanho)
 
     cout << "Extraindo Features de Amostras Positivas ." << endl;
 
-    // Extrai caracteristicas Faces
+    // Extrai caracteristicas
     for (int i = 0; i < filesAP.length();i++)
     {
         string img=filesAP[i].toUtf8().constData();
         IMG = imread(img,CV_LOAD_IMAGE_GRAYSCALE);
-        if(i == 199)
-            PodeAddImage(IMG,tamanho);
-        if(!PodeAddImage(IMG,tamanho))
+        if(IMG.empty())
             continue;
-        Mat mascara = GeraMatComTamanhoEspecifico(IMG,tamanho);
+        Size size(32,36);
+        Mat retorno = Mat::zeros(size,CV_32FC1);
+        resize(IMG,retorno,size);
         busca.IMAGENSPOSITIVAS++;  busca.AMOSTRA++;
-        busca.extraiCaracteristicas( mascara );
+        busca.extraiCaracteristicas( retorno);
     }
-
-    if(busca.IMAGENSPOSITIVAS == 0)
-        return;
 
     cout  << "Extraindo Features de Amostras Negativas ";
 
-    // Extrai caracteristicas Nao Faces
+    // Extrai caracteristicas Nao Pessoa
     for (int i = 0; i < filesAN.length() ;i++)
     {
         string img=filesAN[i].toUtf8().constData();
         IMG = imread( img, CV_LOAD_IMAGE_GRAYSCALE);
+        if(IMG.empty())
+            continue;
         busca.AMOSTRA++;
         busca.extraiCaracteristicas( IMG );
-        cout << ".";
+        //cout << ".";
     }
 
     cout << "\nFaces Positivas -> " << busca.IMAGENSPOSITIVAS  << endl;
@@ -160,37 +151,4 @@ void Treino(Treina &busca, int tamanho)
     cout << "Tempo Total -> " << ((tempoFinal - tempoInicial) / CLOCKS_PER_SEC )  << " segundos" << endl;
     cout << "Fim do Treino -> " << busca.currentDateTime() << endl;
     cout << "Treino Finalizado ! " << endl;
-}
-
-
-
-Mat& GeraMatComTamanhoEspecifico(Mat frame, int tamanho)
-{
-    Mat retorno = Mat::zeros(tamanho,tamanho,CV_32FC1);
-
-    int coluna = (tamanho/2) - (frame.cols /  2), linhas = (tamanho/2) - (frame.rows / 2);
-
-    for(int i = 0;i < frame.cols;i++)
-    {
-        int linhas2 = linhas;
-        for(int j =0;j < frame.rows;j++)
-        {
-            frame.col(i).row(j).copyTo(retorno.col(coluna).row(linhas2));
-            linhas2++;
-        }
-        coluna++;
-    }
-    return retorno;
-}
-
-bool PodeAddImage(Mat frame, int tamanho)
-{
-    bool retorno = false;
-    if(frame.empty())
-        retorno = false;
-    else if(tamanho <= 8)
-        retorno = (frame.cols <= tamanho && frame.rows <= tamanho);
-    else
-        retorno = ((frame.cols >= tamanho/2 && frame.cols <= tamanho) && (frame.rows >= tamanho/2 && frame.rows <= tamanho));
-    return retorno;
 }

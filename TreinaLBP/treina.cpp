@@ -1,11 +1,9 @@
 #include "treina.h"
 
-Treina::Treina(int tamanho)
+Treina::Treina()
 {
-     QString nome = "criterio" + QString::number(tamanho) + ".xml";
+     QString nome = "criterio.xml";
      arqCriterio = nome.toStdString();
-
-     tamanhoDefault = tamanho;
 
      dir = QString("../Imagens/Imagem");
      dirImagens.append(dir);
@@ -13,7 +11,9 @@ Treina::Treina(int tamanho)
      dirNaoPessoa = QString("../Imagens/NPessoa");
      dirTreino = QString("../Imagens/Teste");
 
+     IMAGENSNEGATIVAS = 0;
      IMAGENSPOSITIVAS = 0;
+     AMOSTRA = 0;
 }
 
 void Treina::carregaPessoa(QStringList &Lista)
@@ -33,37 +33,42 @@ void Treina::carregaTeste(QStringList &Lista)
 
 void Treina::extraiCaracteristicas(Mat &Query)
 {
-    Mat ROI(Size(Query.cols,Query.rows),CV_32FC1, Scalar::all(0));
+    Mat ROI(Size(WIDTH,HEIGHT),CV_32FC1, Scalar::all(0));
     Mat LBP;
     Point roi; // Armazena as coordenadas das Features
-    int raio=1; int vizinhaca=8;
+    int raio=2; int vizinhaca=8;
 
-    //cvHaarWavelet(Query,Query,SOFT);
 
-    // convoluçao para converter uma imagem de 320 x 240 px em faces de 25 x 30 px
-    for(int i = 0; i <= Query.rows - tamanhoDefault ; i=i+6)
-    {
-        roi.y = i;
+//    for(int i = 1;i <=2; i++ )
+//    {
+//        Mat Query = Mat::zeros(Query.rows,Query.cols,Query.type());
+//        cvHaarWavelet(Query,Query,SOFT,i);
 
-        for(int j = 0; j <= Query.cols - tamanhoDefault ; j=j+6)
+        // convoluçao para converter uma imagem de 320 x 240 px em faces de 25 x 30 px
+        for(int i = 0; i <= Query.rows - HEIGHT ; i=i+5)
         {
-            roi.x = j;
+            roi.y = i;
 
-            Query.operator ()(Rect(roi.x,roi.y,tamanhoDefault,tamanhoDefault)).convertTo(ROI,CV_32FC1,1,0);
+            for(int j = 0; j <= Query.cols - WIDTH ; j=j+9)
+            {
+                roi.x = j;
 
-            padraoLocal(ROI,LBP,raio,vizinhaca);
+                Query.operator ()(Rect(roi.x,roi.y,WIDTH,HEIGHT)).convertTo(ROI,CV_32FC1,1,0);
 
-            vector<float> temp;
+                padraoLocal(ROI,LBP,raio,vizinhaca);
 
-            MatConstIterator_<float> it = LBP.begin<float>(), it_end = LBP.end<float>();
+                vector<float> temp;
 
-            for(; it != it_end; ++it)
-                temp.push_back(*it);
+                MatConstIterator_<float> it = LBP.begin<float>(), it_end = LBP.end<float>();
 
-            Features.push_back(temp);
-            temp.empty();
+                for(; it != it_end; ++it)
+                    temp.push_back(*it);
+
+                Features.push_back(temp);
+                temp.empty();
+            }
         }
-    }
+  //}
 }
 
 void Treina::padraoLocal(Mat &Origem, Mat &Destino, int Raio, int Vizinhaca)
@@ -127,12 +132,12 @@ void Treina::treino()
     //  --------- Carrega os vetores em cv::Mat para a fase de Treino --------------
 
     for(std::vector<int>::size_type i = 0; i < Features.size(); i++)
-
+    {
         if ( i < IMAGENSPOSITIVAS )
             responses.at<int>(0,i) = 1;
         else
             responses.at<int>(0,i) = -1;
-
+    }
 
     for(int k = 0; k < trainData.rows; k++)
         for(int l = 0; l < trainData.cols; l++)
@@ -154,49 +159,55 @@ void Treina::treino()
 
 void Treina::teste(Mat &Query)
 {
-    Mat ROI(Size(tamanhoDefault,tamanhoDefault),CV_32FC1, Scalar::all(0));
+    Mat ROI(Size(WIDTH,HEIGHT),CV_32FC1, Scalar::all(0));
     Mat LBP;
     Point roi;  // Armazena as coordenadas das Features
-    int raio=1; int vizinhaca=8;
+    int raio=2; int vizinhaca=8;
     DetectFace df;
     faces.clear();
     IMAGENSPOSITIVAS=0;IMAGENSNEGATIVAS=0;
-    // convoluçao para gerar uma imagem de 320 x 240 px em NAO faces de 25 x 30 px
-    for(int i = 0; i <= Query.rows - tamanhoDefault ; i++)
-    {
-        roi.y = i;
 
-        for(int j =0; j <= Query.cols - tamanhoDefault ; j++)
+//    for(int i = 1;i <=2;i++)
+//    {
+//        Mat Query2 = Mat::zeros(Query.rows,Query.cols,Query.type());
+//        cvHaarWavelet(Query,Query2,SOFT,i);
+        // convoluçao para gerar uma imagem de 320 x 240 px em NAO faces de 25 x 30 px
+        for(int i = 0; i <= Query.rows - HEIGHT ; i++)
         {
-            roi.x = j;
+            roi.y = i;
 
-            Query.operator ()(Rect(roi.x,roi.y,tamanhoDefault,tamanhoDefault)).convertTo(ROI,CV_32FC1,1,0);
-
-
-            padraoLocal(ROI,LBP,raio,vizinhaca);
-
-            Mat temp;
-
-            MatConstIterator_<float> it = LBP.begin<float>(), it_end = LBP.end<float>();
-
-            for(; it != it_end; ++it) temp.push_back(*it);
-
-            PREDICAO = boost.predict( temp, Mat(),Range::all(),false,true);
-
-            QString nome = QString("ROI00%1-%2.jpg").arg(i).arg(j);
-            string result2 = nome.toUtf8().constData();
-
-
-            if ( PREDICAO > 5)
+            for(int j =0; j <= Query.cols - WIDTH ; j++)
             {
-                df.predicao = PREDICAO; df.ponto = roi;
-                faces.push_back( df );
-                IMAGENSPOSITIVAS++;
+                roi.x = j;
+
+                Query.operator ()(Rect(roi.x,roi.y,WIDTH,HEIGHT)).convertTo(ROI,CV_32FC1,1,0);
+
+
+                padraoLocal(ROI,LBP,raio,vizinhaca);
+
+                Mat temp;
+
+                MatConstIterator_<float> it = LBP.begin<float>(), it_end = LBP.end<float>();
+
+                for(; it != it_end; ++it) temp.push_back(*it);
+
+                PREDICAO = boost.predict( temp, Mat(),Range::all(),false,true);
+
+                QString nome = QString("ROI00%1-%2.jpg").arg(i).arg(j);
+                string result2 = nome.toUtf8().constData();
+
+
+                if ( PREDICAO > 5)
+                {
+                    df.predicao = PREDICAO; df.ponto = roi;
+                    faces.push_back( df );
+                    IMAGENSPOSITIVAS++;
+                }
+                else
+                    IMAGENSNEGATIVAS++;
             }
-            else
-                IMAGENSNEGATIVAS++;
         }
-    }
+    //}
 }
 
 void Treina::eliminaRepetidos()
@@ -205,8 +216,8 @@ void Treina::eliminaRepetidos()
 
     while (i+1 < faces.size() )
     {
-        if ((faces[i+1].ponto.x - faces[i].ponto.x <= tamanhoDefault) &&
-                (faces[i+1].ponto.y - faces[i].ponto.y <= tamanhoDefault))
+        if ((faces[i+1].ponto.x - faces[i].ponto.x <= WIDTH) &&
+                (faces[i+1].ponto.y - faces[i].ponto.y <= HEIGHT))
         {
 
             if (faces[i+1].predicao > faces[i].predicao)
@@ -230,25 +241,21 @@ void Treina::desenhaRetangulo(Mat &imagem)
     for(unsigned long i = 0; i < faces.size(); i++)
     {
         rectangle(imagem,(Rect(faces[i].ponto.x,
-                                faces[i].ponto.y,tamanhoDefault+1,tamanhoDefault+1)),
+                                faces[i].ponto.y,WIDTH+1,HEIGHT+1)),
                   CV_RGB(255, 255, 0), 1.5);
         // comparar distancia entre os rec, e verficar a media.... para eliminar falsos positivos.
 
-        center.x = faces[i].ponto.x+tamanhoDefault/2;
-        center.y = faces[i].ponto.y+tamanhoDefault/2;
-        radius = cvRound((tamanhoDefault + tamanhoDefault)*0.25*scale);
+        center.x = faces[i].ponto.x+WIDTH/2;
+        center.y = faces[i].ponto.y+HEIGHT/2;
+        radius = cvRound((WIDTH + HEIGHT)*0.25*scale);
         circle( imagem, center, radius,  CV_RGB(0,255,0), 2);
 
     }
 }
 
-bool Treina::loadBoost()
+void Treina::loadBoost()
 {
-    QFile f(QString::fromStdString(arqCriterio));
-    if(!f.exists())
-        return false;
     boost.load(arqCriterio.c_str());
-    return true;
 }
 
 void Treina::carregaList(QDir dir, QStringList &Lista)
@@ -302,7 +309,7 @@ float Treina::garrot_shrink(float d, float T)
     return res;
 }
 
-void Treina::cvHaarWavelet(Mat &src, Mat &dst, int NIter)
+void Treina::cvHaarWavelet(Mat &src, Mat &dst, int NIter, int escolha)
 {
     float c,dh,dv,dd;
     int width = src.cols;
@@ -313,17 +320,26 @@ void Treina::cvHaarWavelet(Mat &src, Mat &dst, int NIter)
         {
             for (int x = 0; x< (width >> (k + 1));x++)
             {
-                c = (src.at<float>(2 * y,2 * x) + src.at<float>(2 * y, 2 * x + 1) + src.at<float>(2*y+1,2*x)+src.at<float>(2*y+1,2*x+1))*0.5;
-                dst.at<float>(y,x) = c;
-
-                dh=(src.at<float>(2*y,2*x)+src.at<float>(2*y+1,2*x)-src.at<float>(2*y,2*x+1)-src.at<float>(2*y+1,2*x+1))*0.5;
-                dst.at<float>(y, x + (width >> (k+1))) = dh;
-
-                dv=(src.at<float>(2*y,2*x)+src.at<float>(2*y,2*x+1)-src.at<float>(2*y+1,2*x)-src.at<float>(2*y+1,2*x+1))*0.5;
-                dst.at<float>(y+( height >> (k+1)),x) = dv;
-
-                dd=(src.at<float>(2*y,2*x)-src.at<float>(2*y,2*x+1)-src.at<float>(2*y+1,2*x)+src.at<float>(2*y+1,2*x+1))*0.5;
-                dst.at<float>(y+(height >> (k+1)),x+(width >> (k+1))) = dd;
+                if(escolha == 1)
+                {
+                    c = (src.at<float>(2 * y,2 * x) + src.at<float>(2 * y, 2 * x + 1) + src.at<float>(2*y+1,2*x)+src.at<float>(2*y+1,2*x+1))*0.5;
+                    dst.at<float>(y,x) = c;
+                }
+                else if(escolha == 2)
+                {
+                    dh=(src.at<float>(2*y,2*x)+src.at<float>(2*y+1,2*x)-src.at<float>(2*y,2*x+1)-src.at<float>(2*y+1,2*x+1))*0.5;
+                    dst.at<float>(y, x + (width >> (k+1))) = dh;
+                }
+                else if(escolha == 3)
+                {
+                    dv=(src.at<float>(2*y,2*x)+src.at<float>(2*y,2*x+1)-src.at<float>(2*y+1,2*x)-src.at<float>(2*y+1,2*x+1))*0.5;
+                    dst.at<float>(y+( height >> (k+1)),x) = dv;
+                }
+                else
+                {
+                    dd=(src.at<float>(2*y,2*x)-src.at<float>(2*y,2*x+1)-src.at<float>(2*y+1,2*x)+src.at<float>(2*y+1,2*x+1))*0.5;
+                    dst.at<float>(y+(height >> (k+1)),x+(width >> (k+1))) = dd;
+                }
             }
         }
         dst.copyTo(src);
