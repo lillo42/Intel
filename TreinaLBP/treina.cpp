@@ -16,7 +16,7 @@ Treina::Treina()
      AMOSTRA = 0;
      PREDICAO = 0;
 
-     hogDefault.setSVMDetector(HOGDescriptor::getDefaultPeopleDetector());;
+     hogDefault.setSVMDetector(HOGDescriptor::getDefaultPeopleDetector());
 }
 
 void Treina::carregaPessoa(QStringList &Lista)

@@ -31,7 +31,11 @@ SOURCES += main.cpp \
     TrataImage/Controller/filtercontroller.cpp \
     TrataImage/Operacao/filter.cpp \
     TCP/tcpserver.cpp \
-    TCP/tcpclient.cpp
+    TCP/tcpclient.cpp \
+    TrataImage/Controller/hogcontroller.cpp \
+    TrataImage/Operacao/hog.cpp \
+    TrataImage/Controller/pixelcontroller.cpp \
+    TrataImage/Operacao/pixel.cpp
 
 HEADERS += \
     TrataImage/trataimagecontroller.h \
@@ -48,4 +52,8 @@ HEADERS += \
     TrataImage/Controller/filtercontroller.h \
     TrataImage/Operacao/filter.h \
     TCP/tcpserver.h \
-    TCP/tcpclient.h
+    TCP/tcpclient.h \
+    TrataImage/Controller/hogcontroller.h \
+    TrataImage/Operacao/hog.h \
+    TrataImage/Controller/pixelcontroller.h \
+    TrataImage/Operacao/pixel.h
