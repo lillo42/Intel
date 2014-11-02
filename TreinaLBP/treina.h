@@ -1,7 +1,8 @@
-#ifndef TREINA_H
+                                                      #ifndef TREINA_H
 #define TREINA_H
 
 // Opencv
+#include <opencv2/opencv.hpp>
 #include <opencv2/core/core.hpp>
 #include <opencv2/contrib/contrib.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -28,8 +29,20 @@
 #define SOFT 2  // soft shrinkage
 #define GARROT 3  // garrot filter
 
-#define WIDTH  32  // cols
-#define HEIGHT 36  // rows
+#define WIDTH_PADRAO  64//32 // cols
+#define HEIGHT_PADRAO 128//36 //rows
+
+#define WIDTH_ROI  64  // cols
+#define HEIGHT_ROI 128  // rows
+
+#define ANDA_WIDTH 32
+#define ANDA_HEIGHT 64
+
+#define RAIO 3
+#define VIZINHAZA 24
+
+//#define WIDTH_DEFAULT 1280//cols
+//#define HEIGHT_DEFAULT 720 //rows
 
 
 using namespace cv;
@@ -56,17 +69,35 @@ public:
     void carregaNaoPessoa(QStringList &Lista);
     void carregaTeste(QStringList &Lista);
 
-    void extraiCaracteristicas(Mat &Query);
+    void extraiCaracteristicasLBP(Mat &Query);
+    void extraiCaracteristicasWavalet(Mat &Query);
+    void extraiCaracteristicasWavaletLBP(Mat &Query);
+    void extraiCaracteristicasPixel(Mat &Query);
+    void extraiCaracteristicasHOG(Mat &Query);
+
+
+    void extraiInformacaoLBP(Mat &src, Mat &LBP);
+
+    void testeLPB( Mat& Query );
+    void testeWavalet( Mat& Query );
+    void testeWavaletLBP( Mat& Query );
+    void testePixel( Mat& Query );
+    void testeHOG( Mat& Query );
+
+    void extraiInformacaoTeste(Mat &src,DetectFace &df,Point &roi);
 
     void padraoLocal(Mat &Origem, Mat &Destino, int Raio, int Vizinhaca);
+    void wavaletToVecto(Mat &wavalet, vector<float> &retorno, int NIter);
 
     const string currentDateTime();
     void treino();
-    void teste( Mat& Query );
     void eliminaRepetidos();
     void desenhaRetangulo(Mat &imagem);
+    void desenhaHog(Mat &frame);
 
     void loadBoost();
+
+    vector<Rect> found, found_filtered;
 
 private:
     QString dirImagens, dir;
@@ -79,6 +110,7 @@ private:
 
     CvBoost boost;
 
+    HOGDescriptor hogDefault;
 
     string arqCriterio;
 
@@ -97,7 +129,15 @@ private:
     // Garrot shrinkage
     float garrot_shrink(float d,float T);
 
+    void cvInvHaarWavelet(Mat &src,Mat &dst,int NIter, int SHRINKAGE_TYPE=0, float SHRINKAGE_T=50);
+
+    void cvHaarWavelet(Mat &src,Mat &dst,int NIter);
+
+    void cvHaarWavelet(Mat &src,vector<float> &dst,int NIter);
+
     void cvHaarWavelet(Mat &src,Mat &dst,int NIter, int escolha);
+
+    void cvHaarWavelet(Mat &src, Mat &mc, Mat &mdd, Mat &mdv, Mat &mdh, int NIter);
 };
 
 #endif // TREINA_H
