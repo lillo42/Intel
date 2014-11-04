@@ -24,7 +24,7 @@ public:
     void stopThread();
 
 signals:
-
+    void onFinishedHOG(Imagem frame, vector<Rect> found);
 public slots:
 
 private:

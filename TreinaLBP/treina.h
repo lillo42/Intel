@@ -29,14 +29,14 @@
 #define SOFT 2  // soft shrinkage
 #define GARROT 3  // garrot filter
 
-#define WIDTH_PADRAO  64//32 // cols
-#define HEIGHT_PADRAO 128//36 //rows
+#define WIDTH_PADRAO  50//32 // cols
+#define HEIGHT_PADRAO 60//36 //rows
 
-#define WIDTH_ROI  64  // cols
-#define HEIGHT_ROI 128  // rows
+#define WIDTH_ROI  50//64  // cols
+#define HEIGHT_ROI 60//128  // rows
 
-#define ANDA_WIDTH 32
-#define ANDA_HEIGHT 64
+#define ANDA_WIDTH 6
+#define ANDA_HEIGHT 6//64
 
 #define RAIO 3
 #define VIZINHAZA 24

@@ -14,7 +14,8 @@ class HOG
 {
 public:
     HOG();
-    void detecta(Mat frame);//,vector<Rect> &found, vector<Rect> &found_filtered);
+    void detecta(Mat frame, vector<Rect> &found_filtered);
+    void detecta(Mat frame);
     vector<Rect> found,found_filtered;
 private:
     HOGDescriptor hog;

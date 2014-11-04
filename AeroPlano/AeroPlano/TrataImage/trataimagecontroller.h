@@ -11,6 +11,8 @@
 #include "Controller/filtercontroller.h"
 #include "Controller/waveletcontroller.h"
 #include "../ImagemController/imagem.h"
+#include "Controller/hogcontroller.h"
+#include "Controller/pixelcontroller.h"
 
 #include <opencv2/core/core.hpp>
 #include <opencv/cv.h>
@@ -39,6 +41,8 @@ private slots:
     void OnTerminouLBP(Imagem frame,int quantidade);
     void OnTerminouSalEPimenta(Imagem salPimenta);
     void OnTerminouWavelet(Imagem frame);
+    void OnTerminouHOG(Imagem frame, vector<Rect> found);
+    void OnTerminou(Imagem frame, vector<Point> &point);
 
 private:
     QList<Imagem> listaProcessa;
@@ -48,10 +52,16 @@ private:
     LBPController *lbp;
     FilterController *filter;
     WaveletController *wavelet;
+    HOGController *hog;
+    PixelController *pixel;
+
+
 
     void criaLBP();
     void criaSalEPimenta();
     void criaWavelet();
+    void criaPixel();
+    void criaHOG();
 
     void processa();
     void comecaProcessar();

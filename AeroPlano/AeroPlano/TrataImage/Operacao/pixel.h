@@ -28,7 +28,7 @@ class Pixel
 {
 public:
     Pixel();
-    void detected(Mat &frame);//, vector<Point> point);
+    void detected(Mat &frame, vector<Point> &point);
     vector<Point> point;
 private:
     void load();

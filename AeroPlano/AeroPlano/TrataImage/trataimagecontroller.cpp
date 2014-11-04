@@ -62,6 +62,16 @@ void TrataImageController::OnTerminouWavelet(Imagem frame)
     //lbp->addProcesa(frame);
 }
 
+void TrataImageController::OnTerminouHOG(Imagem frame, vector<Rect> found)
+{
+
+}
+
+void TrataImageController::OnTerminou(Imagem frame, vector<Point> &point)
+{
+
+}
+
 void TrataImageController::criaLBP()
 {
     lbp = new LBPController(this);
@@ -78,6 +88,16 @@ void TrataImageController::criaWavelet()
 {
     wavelet = new WaveletController();
     connect(wavelet,SIGNAL(onTerminouWavelet(Imagem)),this,SLOT(OnTerminouWavelet(Imagem)));
+}
+
+void TrataImageController::criaPixel()
+{
+    pixel = new PixelController(this);
+}
+
+void TrataImageController::criaHOG()
+{
+    hog = new HOGController(this);
 }
 
 void TrataImageController::processa()
@@ -99,14 +119,17 @@ void TrataImageController::comecaProcessar()
     while(!listaProcessa.empty())
     {
         frame = listaProcessa.first();
-        filter->addProcessa(frame);
+        hog->addProcessa(frame);
+        pixel->addProcessa(frame);
         listaProcessa.removeFirst();
     }
 }
 
 void TrataImageController::addProcessoThreadPool()
 {
-    QThreadPool::globalInstance()->start(wavelet);
-    QThreadPool::globalInstance()->start(filter);
-    QThreadPool::globalInstance()->start(lbp);
+//    QThreadPool::globalInstance()->start(wavelet);
+//    QThreadPool::globalInstance()->start(filter);
+//    QThreadPool::globalInstance()->start(lbp);
+    QThreadPool::globalInstance()->start(hog);
+    QThreadPool::globalInstance()->start(pixel);
 }

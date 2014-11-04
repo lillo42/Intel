@@ -23,7 +23,7 @@ public:
     void stopThread();
 
 signals:
-
+    void onFinishedPixel(Imagem frame, vector<Point> &point);
 public slots:
 
 private:

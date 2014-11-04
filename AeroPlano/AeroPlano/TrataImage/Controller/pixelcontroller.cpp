@@ -16,9 +16,11 @@ void PixelController::run()
 void PixelController::addProcessa(Imagem frame)
 {
     bool acorda = listaProcessa.isEmpty();
-    listaProcessa.append(frame);
     if(acorda)
+    {
+        listaProcessa.append(frame);
         sincronizedThread.wakeOne();
+    }
 }
 
 void PixelController::stopThread()
@@ -47,7 +49,8 @@ void PixelController::executeFilter()
     while(!listaProcessa.empty())
     {
         image = listaProcessa.first();
-        pixel->detected(image.frame);//,&point);
+        pixel->detected(image.frame,point);
+        emit onFinishedPixel(image,point);
         listaProcessa.removeFirst();
 
     }

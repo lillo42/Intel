@@ -43,11 +43,12 @@ void HOGController::processImage()
 void HOGController::executeFilter()
 {
     Imagem image;
-    vector<Rect> found, found_filter;
+    vector<Rect> found_filter;
     while(!listaProcessa.empty())
     {
         image = listaProcessa.first();
-        hog->detecta(image.frame);//,&found,&found_filter);
+        hog->detecta(image.frame,found_filter);
+        emit onFinishedHOG(image,found_filter);
         listaProcessa.removeFirst();
     }
 

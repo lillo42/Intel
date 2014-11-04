@@ -4,7 +4,7 @@ Pixel::Pixel()
 {
 }
 
-void Pixel::detected(Mat &frame)//,vector<Point> point)
+void Pixel::detected(Mat &frame, vector<Point> &point)
 {
     Mat ROI(Size(WIDTH_PADRAO,HEIGHT_PADRAO),CV_32FC1, Scalar::all(0));
     Point roi;  // Armazena as coordenadas das Features

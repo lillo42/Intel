@@ -104,7 +104,6 @@ void Treina::extraiCaracteristicasWavaletLBP(Mat &Query)
 {
     Mat ROI(Size(WIDTH_PADRAO,HEIGHT_PADRAO),CV_32FC1, Scalar::all(0)),LBP;
     Point roi; // Armazena as coordenadas das Features
-    int raio=2; int vizinhaca=8;
 
     Size s(WIDTH_ROI,HEIGHT_ROI);
     Mat ROI_TRUE = Mat::zeros(s,CV_32FC1);
@@ -318,7 +317,6 @@ void Treina::testeLPB(Mat &Query)
     Mat ROI(Size(WIDTH_PADRAO,HEIGHT_PADRAO),CV_32FC1, Scalar::all(0));
     Mat LBP;
     Point roi;  // Armazena as coordenadas das Features
-    int raio=2; int vizinhaca=12;
     DetectFace df;
     faces.clear();
     IMAGENSPOSITIVAS=0;IMAGENSNEGATIVAS=0;
@@ -417,7 +415,6 @@ void Treina::testeWavaletLBP(Mat &Query)
     Mat ROI(Size(WIDTH_PADRAO,HEIGHT_PADRAO),CV_32FC1, Scalar::all(0));
     Mat LBP;
     Point roi;  // Armazena as coordenadas das Features
-    int raio=2; int vizinhaca=8;
     DetectFace df;
     faces.clear();
     IMAGENSPOSITIVAS=0;IMAGENSNEGATIVAS=0;
