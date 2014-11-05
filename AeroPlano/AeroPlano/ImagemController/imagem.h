@@ -15,6 +15,7 @@ public:
 
     QString nome;
     Mat frame;
+    Mat frameNotProcess;
     int count;
 
 };

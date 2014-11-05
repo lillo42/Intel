@@ -8,6 +8,12 @@ FilterController::FilterController(QObject *parent) :
     finishedThread = false;
 }
 
+FilterController::~FilterController()
+{
+    if(filter)
+        delete filter;
+}
+
 void FilterController::addProcessa(Imagem frame)
 {
     bool acorda = listaProcessa.isEmpty();

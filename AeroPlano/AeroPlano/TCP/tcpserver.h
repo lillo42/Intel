@@ -11,9 +11,12 @@ class TcpServer : public QObject
     Q_OBJECT
 public:
     explicit TcpServer(QObject *parent = 0);
+    ~TcpServer();
+
     void startServer(int port);
 
     int getPort();
+    void sendaData(QByteArray &array);
 signals:
     void reciveDate(QByteArray data,int port);
 public slots:

@@ -8,6 +8,12 @@ WaveletController::WaveletController(QObject *parent) :
     finishedThread=false;
 }
 
+WaveletController::~WaveletController()
+{
+    if(w)
+        delete w;
+}
+
 void WaveletController::addProcessa(Imagem frame)
 {
     bool acorda = listaProcessa.isEmpty();

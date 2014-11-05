@@ -16,13 +16,22 @@
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
 using namespace cv;
+#define PORT_IMAGE_NOT_PROCESS 20001
+#define PORT_IMAGE_HOG 20002
+#define PORT_IMAGE_PIXEL 20003
+
 //TODO: See if is possible add in some list in IOController
 class TcpController : public QObject
 {
     Q_OBJECT
 public:
     explicit TcpController(QObject *parent = 0);
+    ~TcpController();
+
     void start();
+
+    void sendImageHOG(Imagem image, int qtd);
+    void sendImagePixel(Imagem image,int qtd);
 
 signals:
 
@@ -44,7 +53,14 @@ private:
 
     void imageRecive(QByteArray data);
 
+    void sendImageNotProcess(Mat &frame);
+    void sendImage(Mat &frame, int port);
+    void sendImage(Mat &frame, int count,int port);
+
     void setVariable();
+    TcpServer* searchTcpServer(int port);
+
+    QByteArray mat2ByteArray(Mat &image);
 };
 
 #endif // TCPCONTROLLER_H

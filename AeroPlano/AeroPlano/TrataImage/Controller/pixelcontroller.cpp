@@ -8,6 +8,12 @@ PixelController::PixelController(QObject *parent) :
     finishedThread = false;
 }
 
+PixelController::~PixelController()
+{
+    if(pixel)
+        delete pixel;
+}
+
 void PixelController::run()
 {
 
@@ -53,5 +59,31 @@ void PixelController::executeFilter()
         emit onFinishedPixel(image,point);
         listaProcessa.removeFirst();
 
+    }
+}
+
+void PixelController::removeRepeated(vector<Point> &points)
+{
+    unsigned i = 0;
+    Point pAtual;
+    Point pProximo;
+    while (i+1 < points.size() )
+    {
+
+        pAtual = points[i];
+        pProximo = points[i+1];
+        if ((pProximo.x - pAtual.x <= WIDTH_ROI) &&
+                (pProximo.y - pAtual.y <= HEIGHT_ROI))
+        {
+
+//            if (faces[i+1].predicao > faces[i].predicao)
+//                faces.erase(faces.begin()+i);
+//            else
+//                faces.erase(faces.begin()+1+i);
+            //IMAGENSNEGATIVAS++;
+            //IMAGENSPOSITIVAS--;
+        }
+        else
+            i++;
     }
 }

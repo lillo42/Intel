@@ -34,6 +34,8 @@ public:
 
 signals:
     void onTerminouContagem(Imagem frame);
+    void onTerminouContagemHOG(Imagem frame, int cout);
+    void onTerminouContagemPixel(Imagem frame, int cout);
 
 public slots:
 
@@ -42,7 +44,7 @@ private slots:
     void OnTerminouSalEPimenta(Imagem salPimenta);
     void OnTerminouWavelet(Imagem frame);
     void OnTerminouHOG(Imagem frame, vector<Rect> found);
-    void OnTerminou(Imagem frame, vector<Point> &point);
+    void OnTerminouPixel(Imagem frame, vector<Point> &point);
 
 private:
     QList<Imagem> listaProcessa;
@@ -67,6 +69,9 @@ private:
     void comecaProcessar();
 
     void addProcessoThreadPool();
+
+    void drawImage(Mat &frame,vector<Point> &points);
+    void drawImage(Mat &frame, vector<Rect> &points);
 };
 
 #endif // TRATAIMAGECONTROLLER_H

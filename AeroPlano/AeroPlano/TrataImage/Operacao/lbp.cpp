@@ -13,7 +13,7 @@ int LBP::Detecta(Mat frame)
 
 int LBP::Detected(float values)
 {
-
+    return values;
 }
 
 void LBP::eliminaRepetidos()

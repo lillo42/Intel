@@ -18,6 +18,7 @@ class IOController : public QObject
     Q_OBJECT
 public:
     explicit IOController(QObject *parent = 0);
+    ~IOController();
 
     void addSave(Imagem frame);
 

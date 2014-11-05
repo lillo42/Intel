@@ -19,6 +19,7 @@ class WaveletController : public QObject, public QRunnable
     Q_OBJECT
 public:
     explicit WaveletController(QObject *parent = 0);
+    ~WaveletController();
 
     void addProcessa(Imagem frame);
     void stopThread();

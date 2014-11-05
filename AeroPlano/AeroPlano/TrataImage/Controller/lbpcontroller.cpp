@@ -8,6 +8,12 @@ LBPController::LBPController(QObject *parent) :
     finishedThread = false;
 }
 
+LBPController::~LBPController()
+{
+    if(lbp)
+        delete lbp;
+}
+
 void LBPController::addProcesa(Imagem frame)
 {
     bool acorda = listaProcessa.isEmpty();
@@ -25,11 +31,6 @@ void LBPController::stopThread()
 void LBPController::run()
 {
     processa();
-}
-
-void LBPController::onCalculatesLBP(float values)
-{
-
 }
 
 void LBPController::processa()

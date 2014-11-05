@@ -6,6 +6,23 @@ TcpServer::TcpServer(QObject *parent) :
     createServer();
 }
 
+TcpServer::~TcpServer()
+{
+    if(socket)
+    {
+        socket->disconnectFromHost();
+        disconnected();
+        delete socket;
+    }
+    if(server)
+    {
+        server->close();
+        disconnect(server,SIGNAL(newConnection()));
+        delete server;
+
+    }
+}
+
 void TcpServer::startServer(int port)
 {
     this->port = port;
@@ -18,6 +35,15 @@ void TcpServer::startServer(int port)
 int TcpServer::getPort()
 {
     return port;
+}
+
+void TcpServer::sendaData(QByteArray &array)
+{
+    if(socket->state() != QTcpSocket::ConnectedState)
+        return;
+    socket->write(array);
+    socket->flush();
+    socket->waitForBytesWritten();
 }
 
 void TcpServer::newConnection()

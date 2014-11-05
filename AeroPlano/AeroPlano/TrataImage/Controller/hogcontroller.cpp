@@ -8,6 +8,12 @@ HOGController::HOGController(QObject *parent) :
     finishedThread = false;
 }
 
+HOGController::~HOGController()
+{
+    if(hog)
+        delete hog;
+}
+
 void HOGController::run()
 {
     processImage();

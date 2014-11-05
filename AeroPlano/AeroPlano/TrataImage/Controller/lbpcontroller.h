@@ -17,6 +17,7 @@ class LBPController : public QObject, public QRunnable
     Q_OBJECT
 public:
     explicit LBPController(QObject *parent = 0);
+    ~LBPController();
 
     void addProcesa(Imagem frame);
     void stopThread();
@@ -25,9 +26,6 @@ public:
 
 signals:
     void onTerminouLBP(Imagem frame,int quantidades);
-
-public slots:
-    void onCalculatesLBP(float values);
 private:
     QList<Imagem> listaProcessa;
     LBP *lbp;

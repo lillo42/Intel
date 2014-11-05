@@ -18,6 +18,7 @@ class HOGController : public QObject, public QRunnable
     Q_OBJECT
 public:
     explicit HOGController(QObject *parent = 0);
+    ~HOGController();
 
     void run();
     void addProcessa(Imagem frame);

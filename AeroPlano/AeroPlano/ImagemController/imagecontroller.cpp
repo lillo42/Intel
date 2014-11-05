@@ -8,6 +8,25 @@ ImageController::ImageController(QObject *parent) :
     criaTcpController();
 }
 
+ImageController::~ImageController()
+{
+    if(trata)
+    {
+        disconnect(trata,SIGNAL(onTerminouContagem(Imagem)));
+        disconnect(trata,SIGNAL(onTerminouContagemHOG(Imagem,int)));
+        disconnect(trata,SIGNAL(onTerminouContagemPixel(Imagem,int)));
+        delete trata;
+    }
+    if(io)
+    {
+        delete io;
+    }
+    if(tcp)
+    {
+        delete tcp;
+    }
+}
+
 void ImageController::run()
 {
     processa();
@@ -24,6 +43,15 @@ void ImageController::onTerminouContagem(Imagem frame)
     io->addSave(frame);
 }
 
+void ImageController::onTerminouContagemHOG(Imagem frame, int cout)
+{
+    tcp->sendImageHOG(frame,cout);
+}
+
+void ImageController::onTerminouContagemPixel(Imagem frame, int cout)
+{
+    tcp->sendImagePixel(frame,cout);
+}
 
 void ImageController::addThreadPool()
 {
@@ -36,6 +64,8 @@ void ImageController::criaTrataImageController()
 {
     trata = new TrataImageController(this);
     connect(trata,SIGNAL(onTerminouContagem(Imagem)),this,SLOT(onTerminouContagem(Imagem)),Qt::DirectConnection);
+    connect(trata,SIGNAL(onTerminouContagemHOG(Imagem,int)),this,SLOT(onTerminouContagemHOG(Imagem,int)));
+    connect(trata,SIGNAL(onTerminouContagemPixel(Imagem,int)),this,SLOT(onTerminouContagemPixel(Imagem,int)));
 }
 
 void ImageController::criaIOController()
@@ -72,5 +102,6 @@ Imagem ImageController::criaImagem(Mat frame)
     Imagem i;
     i.nome = io->getImageName();
     i.frame = frame;
+    i.frameNotProcess = frame.clone();
     return i;
 }

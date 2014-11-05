@@ -17,6 +17,7 @@ class PixelController : public QObject, public QRunnable
     Q_OBJECT
 public:
     explicit PixelController(QObject *parent = 0);
+    ~PixelController();
 
     void run();
     void addProcessa(Imagem frame);
@@ -35,6 +36,7 @@ private:
 
     void processImage();
     void executeFilter();
+    void removeRepeated(vector<Point> &points);
 
 };
 

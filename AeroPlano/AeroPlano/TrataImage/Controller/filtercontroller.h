@@ -19,7 +19,7 @@ class FilterController : public QObject,public QRunnable
     Q_OBJECT
 public:
     explicit FilterController(QObject *parent = 0);
-
+    ~FilterController();
     void addProcessa(Imagem frame);
     void stopThread();
 

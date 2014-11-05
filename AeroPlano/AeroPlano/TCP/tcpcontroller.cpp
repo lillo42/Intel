@@ -6,6 +6,17 @@ TcpController::TcpController(QObject *parent) :
     setVariable();
 }
 
+TcpController::~TcpController()
+{
+    while(listServes.size() > 0)
+    {
+        TcpServer *s = listServes.first();
+        listServes.removeFirst();
+        disconnect(s,SIGNAL(reciveDate(QByteArray,int)));
+        delete s;
+    }
+}
+
 
 void TcpController::start()
 {
@@ -14,6 +25,19 @@ void TcpController::start()
     foreach (QString port, listPortStrg)
         listPort.append(port.toInt());
     startServers(listPort);
+}
+
+void TcpController::sendImageHOG(Imagem image, int qtd)
+{
+   sendImageNotProcess(image.frameNotProcess);
+   sendImage(image.frame,qtd,PORT_IMAGE_HOG);
+
+}
+
+void TcpController::sendImagePixel(Imagem image, int qtd)
+{
+    sendImageNotProcess(image.frameNotProcess);
+    sendImage(image.frame,qtd,PORT_IMAGE_PIXEL);
 }
 
 
@@ -62,6 +86,25 @@ void TcpController::imageRecive(QByteArray data)
     image.save(localSave,"JPG");
 }
 
+void TcpController::sendImageNotProcess(Mat &frame)
+{
+    sendImage(frame,PORT_IMAGE_NOT_PROCESS);
+}
+
+void TcpController::sendImage(Mat &frame, int port)
+{
+    sendImage(frame,0,port);
+}
+
+void TcpController::sendImage(Mat &frame, int count, int port)
+{
+    TcpServer *s = searchTcpServer(port);
+    QByteArray array = mat2ByteArray(frame);
+    s->sendaData(array);
+    array = QString::number(count).toLatin1();
+    s->sendaData(array);
+}
+
 
 void TcpController::setVariable()
 {
@@ -70,4 +113,29 @@ void TcpController::setVariable()
     count = 0;
     path = QCoreApplication::applicationDirPath() + "/Imagem";
     textName = QCoreApplication::applicationDirPath() + "/port.txt";
+}
+
+TcpServer *TcpController::searchTcpServer(int port)
+{
+    TcpServer *s;
+    for(int i = 0;i < listServes.size();i++)
+    {
+        s = listServes.at(i);
+        if(s->getPort() == port)
+            break;
+    }
+    return s;
+}
+
+QByteArray TcpController::mat2ByteArray(Mat &image)
+{
+    QByteArray byteArray;
+    QDataStream stream( &byteArray, QIODevice::WriteOnly );
+    stream << image.type();
+    stream << image.rows;
+    stream << image.cols;
+    const size_t data_size = image.cols * image.rows * image.elemSize();
+    QByteArray data = QByteArray::fromRawData( (const char*)image.ptr(), data_size );
+    stream << data;
+    return byteArray;
 }

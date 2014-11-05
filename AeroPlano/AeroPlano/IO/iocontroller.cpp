@@ -6,6 +6,11 @@ IOController::IOController(QObject *parent) :
     setVariable();
 }
 
+IOController::~IOController()
+{
+
+}
+
 void IOController::addSave(Imagem frame)
 {
     save(frame);

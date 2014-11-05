@@ -24,6 +24,8 @@ class ImageController : public QObject, public QRunnable
 
 public:
     explicit ImageController(QObject *parent = 0);
+    ~ImageController();
+
     void run();
     void start();
 signals:
@@ -32,6 +34,8 @@ public slots:
 
 private slots:
     void onTerminouContagem(Imagem frame);
+    void onTerminouContagemHOG(Imagem frame, int cout);
+    void onTerminouContagemPixel(Imagem frame, int cout);
 
 private:
     TrataImageController *trata;
