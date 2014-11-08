@@ -2,6 +2,15 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/home/lillo/Documents/GitHub/Intel/LeitorGPS_V3_TCP/LeitorGPS/src/NetworkController/IReciveInternal.java</file>
+            <file>file:/home/lillo/Documents/GitHub/Intel/LeitorGPS_V3_TCP/LeitorGPS/src/leitorGPS/MainClass.java</file>
+            <file>file:/home/lillo/Documents/GitHub/Intel/LeitorGPS_V3_TCP/LeitorGPS/src/leitorGPS/GPFactory.java</file>
+            <file>file:/home/lillo/Documents/GitHub/Intel/LeitorGPS_V3_TCP/LeitorGPS/src/leitorGPS/ComunicadorTCP.java</file>
+            <file>file:/home/lillo/Documents/GitHub/Intel/LeitorGPS_V3_TCP/LeitorGPS/src/forms/frDados.java</file>
+            <file>file:/home/lillo/Documents/GitHub/Intel/LeitorGPS_V3_TCP/LeitorGPS/src/NetworkController/NetworkController.java</file>
+            <file>file:/home/lillo/Documents/GitHub/Intel/LeitorGPS_V3_TCP/LeitorGPS/src/NetworkController/IReciveImage.java</file>
+            <file>file:/home/lillo/Documents/GitHub/Intel/LeitorGPS_V3_TCP/LeitorGPS/src/NetworkController/TcpClient.java</file>
+        </group>
     </open-files>
 </project-private>

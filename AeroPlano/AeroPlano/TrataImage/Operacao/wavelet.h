@@ -1,10 +1,6 @@
 #ifndef WAVELET_H
 #define WAVELET_H
 
-
-#include <cuda.h>
-
-
 #include <iostream>
 #include <vector>
 #include <stdio.h>

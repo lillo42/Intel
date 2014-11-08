@@ -9,6 +9,8 @@
 #include <QImage>
 #include <QCoreApplication>
 #include <QList>
+#include <QBuffer>
+#include <QByteArray>
 
 #include "tcpserver.h"
 #include "../ImagemController/imagem.h"

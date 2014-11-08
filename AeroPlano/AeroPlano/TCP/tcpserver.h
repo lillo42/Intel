@@ -34,6 +34,7 @@ private:
     void createServer();
     void reciveImage();
     void reciveAnotherFing();
+    bool conectado;
 };
 
 #endif // TCPSERVER_H

@@ -45,7 +45,9 @@ void ImageController::onTerminouContagem(Imagem frame)
 
 void ImageController::onTerminouContagemHOG(Imagem frame, int cout)
 {
+    qDebug() << "Terminou de processar";
     tcp->sendImageHOG(frame,cout);
+    io->addSave(frame);
 }
 
 void ImageController::onTerminouContagemPixel(Imagem frame, int cout)
@@ -93,6 +95,7 @@ void ImageController::processa()
         frame = io->readNextImage();
         if(frame.empty())
             continue;
+        qDebug() << "Process";
         addImageTrata(criaImagem(frame));
     }
 }
@@ -100,7 +103,7 @@ void ImageController::processa()
 Imagem ImageController::criaImagem(Mat frame)
 {
     Imagem i;
-    i.nome = io->getImageName();
+    i.nome = io->getImageNameNotProcess();
     i.frame = frame;
     i.frameNotProcess = frame.clone();
     return i;

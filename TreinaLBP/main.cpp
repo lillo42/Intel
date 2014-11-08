@@ -35,15 +35,9 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-    int tipo = PIXEL;
-    for(int escolha = 1;escolha <=2;escolha++)
-    {
-        Treina t;
-        if(escolha == 1)
-            Treino(t,tipo);
-        else if(escolha == 2)
-            Teste(t,tipo);
-    }
+    int tipo = HOG;
+    Treina t;
+    Teste(t,tipo);
     return a.exec();
 }
 

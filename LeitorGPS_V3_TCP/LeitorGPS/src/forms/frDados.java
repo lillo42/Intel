@@ -7,7 +7,8 @@
 package forms;
 
 import DAO.ControleAcesso;
-import DAO.GPDAO;
+import NetworkController.IReciveImage;
+import NetworkController.NetworkController;
 import excecoes.LeituraArquivoException;
 import gpSentences.*;
 import java.awt.BorderLayout;
@@ -18,6 +19,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -25,6 +27,7 @@ import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -55,10 +58,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.ui.RectangleInsets;
 import org.jfree.ui.TextAnchor;
 import org.openstreetmap.gui.jmapviewer.Coordinate;
-import org.openstreetmap.gui.jmapviewer.JMapViewer;
 import org.openstreetmap.gui.jmapviewer.JMapViewerDrone;
-import org.openstreetmap.gui.jmapviewer.MemoryTileCache;
-import org.openstreetmap.gui.jmapviewer.tilesources.OfflineOsmTileSource;
 import util.SateliteModel;
 import util.Util;
 import util.Util.EnumEstadoForm;
@@ -72,7 +72,7 @@ import util.Util.EnumTipoMensagem;
  * 
  * @author Vitor
  */
-public class frDados extends javax.swing.JFrame implements ActionListener, ISatInfoListener{
+public class frDados extends javax.swing.JFrame implements ActionListener, ISatInfoListener, IReciveImage{
     
     EnumTipoConexao modoConexao;
     EnumEstadoForm estadoForm = EnumEstadoForm.Ocioso;
@@ -84,6 +84,10 @@ public class frDados extends javax.swing.JFrame implements ActionListener, ISatI
     JPanel pnlSkyplot;
     JFXPanelMapa3D pnl3DMapFX;
     JMapViewerDrone mapOsm;
+            
+    
+    private final int PORT_NOT_PROCESS = 20001;
+    private final int PORT_PROCESS = 20002;
             
     /**
      * Instancia o form.
@@ -474,7 +478,8 @@ public class frDados extends javax.swing.JFrame implements ActionListener, ISatI
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initComponents()
+    {
 
         grpModoConexao = new javax.swing.ButtonGroup();
         jfcArquivo = new javax.swing.JFileChooser();
@@ -560,10 +565,16 @@ public class frDados extends javax.swing.JFrame implements ActionListener, ISatI
         radArquivo = new javax.swing.JRadioButton();
         radTcp = new javax.swing.JRadioButton();
         jPanel14 = new javax.swing.JPanel();
-        jLabel17 = new javax.swing.JLabel();
         txtIp = new javax.swing.JTextField();
+        jLabel17 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
         txtPorta = new javax.swing.JTextField();
+        jPanel15 = new javax.swing.JPanel();
+        lblImageNotProcess = new javax.swing.JLabel();
+        lblImageProcess = new javax.swing.JLabel();
+        jLabel22 = new javax.swing.JLabel();
+        txtIPFoto = new javax.swing.JTextField();
+        btnConnectImage = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         mnuAcessos = new javax.swing.JMenu();
         mnuCadastroUser = new javax.swing.JMenuItem();
@@ -577,16 +588,20 @@ public class frDados extends javax.swing.JFrame implements ActionListener, ISatI
         frCadastro.setResizable(false);
 
         lstUsers.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        lstUsers.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
+        lstUsers.addMouseListener(new java.awt.event.MouseAdapter()
+        {
+            public void mouseClicked(java.awt.event.MouseEvent evt)
+            {
                 lstUsersMouseClicked(evt);
             }
         });
         jScrollPane4.setViewportView(lstUsers);
 
         btnCancelar.setText("Cancelar");
-        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btnCancelar.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 btnCancelarActionPerformed(evt);
             }
         });
@@ -630,15 +645,19 @@ public class frDados extends javax.swing.JFrame implements ActionListener, ISatI
         jPanel11.setBorder(javax.swing.BorderFactory.createTitledBorder("Ações"));
 
         btnAplicar.setText("Aplicar");
-        btnAplicar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btnAplicar.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 btnAplicarActionPerformed(evt);
             }
         });
 
         btnRemover.setText("Remover");
-        btnRemover.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btnRemover.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 btnRemoverActionPerformed(evt);
             }
         });
@@ -723,7 +742,7 @@ public class frDados extends javax.swing.JFrame implements ActionListener, ISatI
         pnlMapConteudo.setLayout(pnlMapConteudoLayout);
         pnlMapConteudoLayout.setHorizontalGroup(
             pnlMapConteudoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 477, Short.MAX_VALUE)
+            .addGap(0, 472, Short.MAX_VALUE)
         );
         pnlMapConteudoLayout.setVerticalGroup(
             pnlMapConteudoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -837,8 +856,10 @@ public class frDados extends javax.swing.JFrame implements ActionListener, ISatI
         sldRaioMarc.setPaintLabels(true);
         sldRaioMarc.setPaintTicks(true);
         sldRaioMarc.setSnapToTicks(true);
-        sldRaioMarc.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+        sldRaioMarc.addChangeListener(new javax.swing.event.ChangeListener()
+        {
+            public void stateChanged(javax.swing.event.ChangeEvent evt)
+            {
                 sldRaioMarcStateChanged(evt);
             }
         });
@@ -847,24 +868,30 @@ public class frDados extends javax.swing.JFrame implements ActionListener, ISatI
 
         btnAplicarMarcTmp.setText("Aplicar");
         btnAplicarMarcTmp.setToolTipText("Torna perímetro temporário efetivo");
-        btnAplicarMarcTmp.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btnAplicarMarcTmp.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 btnAplicarMarcTmpActionPerformed(evt);
             }
         });
 
         btnCancelarMarcTmp.setText("Cancelar");
         btnCancelarMarcTmp.setToolTipText("Remove perímetro temporário");
-        btnCancelarMarcTmp.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btnCancelarMarcTmp.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 btnCancelarMarcTmpActionPerformed(evt);
             }
         });
 
         btnRemoverTudo.setText("Remover marcadores");
         btnRemoverTudo.setToolTipText("Remove todos marcadores");
-        btnRemoverTudo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btnRemoverTudo.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 btnRemoverTudoActionPerformed(evt);
             }
         });
@@ -884,7 +911,7 @@ public class frDados extends javax.swing.JFrame implements ActionListener, ISatI
                 .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(sldRaioMarc, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(jPanel13Layout.createSequentialGroup()
-                        .addComponent(btnAplicarMarcTmp, javax.swing.GroupLayout.DEFAULT_SIZE, 78, Short.MAX_VALUE)
+                        .addComponent(btnAplicarMarcTmp, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnCancelarMarcTmp, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(btnRemoverTudo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1126,8 +1153,10 @@ public class frDados extends javax.swing.JFrame implements ActionListener, ISatI
         lblTotal.setText("0");
 
         btnSalvar.setText("Salvar");
-        btnSalvar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btnSalvar.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 btnSalvarActionPerformed(evt);
             }
         });
@@ -1212,8 +1241,10 @@ public class frDados extends javax.swing.JFrame implements ActionListener, ISatI
         txtCaminho.setText("gpsdata.txt");
 
         btnSelecionarArquivo.setText("Selecionar");
-        btnSelecionarArquivo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btnSelecionarArquivo.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 btnSelecionarArquivoActionPerformed(evt);
             }
         });
@@ -1249,8 +1280,10 @@ public class frDados extends javax.swing.JFrame implements ActionListener, ISatI
         jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder("Conexão"));
 
         btnConectar.setText("Conectar");
-        btnConectar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btnConectar.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 btnConectarActionPerformed(evt);
             }
         });
@@ -1294,9 +1327,9 @@ public class frDados extends javax.swing.JFrame implements ActionListener, ISatI
 
         jPanel14.setBorder(javax.swing.BorderFactory.createTitledBorder("TCP"));
 
-        jLabel17.setText("Endereço IP");
-
         txtIp.setText("127.0.0.1");
+
+        jLabel17.setText("Endereço IP");
 
         jLabel18.setText("Porta");
 
@@ -1363,13 +1396,78 @@ public class frDados extends javax.swing.JFrame implements ActionListener, ISatI
 
         jTabbedPane1.addTab("Opções", jPanel3);
 
+        lblImageNotProcess.setText("Image1");
+        lblImageNotProcess.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        lblImageNotProcess.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        lblImageNotProcess.setName(""); // NOI18N
+
+        lblImageProcess.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblImageProcess.setText("Image2");
+
+        jLabel22.setText("IP:");
+
+        btnConnectImage.setText("Conectar");
+        btnConnectImage.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                btnConnectImageActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel15Layout = new javax.swing.GroupLayout(jPanel15);
+        jPanel15.setLayout(jPanel15Layout);
+        jPanel15Layout.setHorizontalGroup(
+            jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel15Layout.createSequentialGroup()
+                .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel15Layout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addComponent(jLabel22)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtIPFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel15Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(lblImageNotProcess, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel15Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnConnectImage)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel15Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblImageProcess, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(30, 30, 30))))
+        );
+        jPanel15Layout.setVerticalGroup(
+            jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel15Layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel22)
+                    .addComponent(txtIPFoto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnConnectImage))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(lblImageProcess, javax.swing.GroupLayout.DEFAULT_SIZE, 436, Short.MAX_VALUE)
+                    .addComponent(lblImageNotProcess, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(137, Short.MAX_VALUE))
+        );
+
+        lblImageNotProcess.getAccessibleContext().setAccessibleName("lblImageNU");
+        lblImageProcess.getAccessibleContext().setAccessibleName("lblImageProcess");
+
+        jTabbedPane1.addTab("Foto", jPanel15);
+
         jSplitPane3.setLeftComponent(jTabbedPane1);
 
         mnuAcessos.setText("Acessos");
 
         mnuCadastroUser.setText("Manutenção de usuários");
-        mnuCadastroUser.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        mnuCadastroUser.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 mnuCadastroUserActionPerformed(evt);
             }
         });
@@ -1383,8 +1481,10 @@ public class frDados extends javax.swing.JFrame implements ActionListener, ISatI
         mnuAjuda.setText("Ajuda");
 
         mnuSobre.setText("Sobre");
-        mnuSobre.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        mnuSobre.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
                 mnuSobreActionPerformed(evt);
             }
         });
@@ -1616,6 +1716,12 @@ public class frDados extends javax.swing.JFrame implements ActionListener, ISatI
         mapOsm.repaint();
     }//GEN-LAST:event_btnRemoverTudoActionPerformed
 
+    private void btnConnectImageActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_btnConnectImageActionPerformed
+    {//GEN-HEADEREND:event_btnConnectImageActionPerformed
+        NetworkController.getInstace().createTcpClient(txtIPFoto.getText(),PORT_NOT_PROCESS , this);
+        NetworkController.getInstace().createTcpClient(txtIPFoto.getText(),PORT_PROCESS , this);
+    }//GEN-LAST:event_btnConnectImageActionPerformed
+
     private void setEstadoForm(EnumEstadoForm estado)
     {
         estadoForm = estado;
@@ -1639,6 +1745,7 @@ public class frDados extends javax.swing.JFrame implements ActionListener, ISatI
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnCancelarMarcTmp;
     private javax.swing.JButton btnConectar;
+    private javax.swing.JButton btnConnectImage;
     private javax.swing.JButton btnRemover;
     private javax.swing.JButton btnRemoverTudo;
     private javax.swing.JButton btnSalvar;
@@ -1661,6 +1768,7 @@ public class frDados extends javax.swing.JFrame implements ActionListener, ISatI
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -1675,6 +1783,7 @@ public class frDados extends javax.swing.JFrame implements ActionListener, ISatI
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel14;
+    private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -1693,6 +1802,8 @@ public class frDados extends javax.swing.JFrame implements ActionListener, ISatI
     private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JFileChooser jfcArquivo;
     private javax.swing.JLabel lblEstadoPosit;
+    private javax.swing.JLabel lblImageNotProcess;
+    private javax.swing.JLabel lblImageProcess;
     private javax.swing.JLabel lblLido;
     private javax.swing.JLabel lblRaio;
     private javax.swing.JLabel lblSatsUsados;
@@ -1718,6 +1829,7 @@ public class frDados extends javax.swing.JFrame implements ActionListener, ISatI
     private javax.swing.JTable tabSats;
     private javax.swing.JTextField txtCaminho;
     private javax.swing.JTextField txtDir;
+    private javax.swing.JTextField txtIPFoto;
     private javax.swing.JTextField txtIp;
     private javax.swing.JTextField txtLatitude;
     private javax.swing.JTextField txtLogin;
@@ -1740,7 +1852,8 @@ public class frDados extends javax.swing.JFrame implements ActionListener, ISatI
         {
             String name = ((JMenuItem)e.getSource()).getText();
             
-            try {
+            try
+            {
                 for(UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels())
                 {
                     if(info.getName().equals(name))
@@ -1750,16 +1863,25 @@ public class frDados extends javax.swing.JFrame implements ActionListener, ISatI
                     SwingUtilities.updateComponentTreeUI(frCadastro);
                 }
                 
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(frDados.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (InstantiationException ex) {
-                Logger.getLogger(frDados.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IllegalAccessException ex) {
-                Logger.getLogger(frDados.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (UnsupportedLookAndFeelException ex) {
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) 
+            {
                 Logger.getLogger(frDados.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+
+    @Override
+    public void onReciveImage(String image, int port)
+    {
+        if(port == PORT_NOT_PROCESS)
+            setLabelValues(lblImageNotProcess,image);
+        else if(port == PORT_PROCESS)
+            setLabelValues(lblImageProcess,image);
+    }
+    
+    private void setLabelValues(javax.swing.JLabel  lbl, String image)
+    {
+        lbl.setIcon(new ImageIcon(image));
     }
     
     /**

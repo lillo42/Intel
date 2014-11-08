@@ -60,5 +60,7 @@ void Camera::startCamera(VideoCapture &cam)
         cam.open(0);
         if(!cam.isOpened())
             qDebug() << "Can't open cam";
+        else
+            qDebug() << "Open cam";
     }
 }

@@ -31,6 +31,9 @@ void TcpController::sendImageHOG(Imagem image, int qtd)
 {
    sendImageNotProcess(image.frameNotProcess);
    sendImage(image.frame,qtd,PORT_IMAGE_HOG);
+   //TcpServer *s = searchTcpServer(port);
+   //s->sendaData(image.nome.toLatin1());
+   //s->sendaData(image.);
 
 }
 
@@ -83,7 +86,7 @@ void TcpController::imageRecive(QByteArray data)
         qDebug() << "Image not Null";
     QString localSave = path + "/" + defaulName + QString::number(count++) + extension;
     qDebug() << localSave;
-    image.save(localSave,"JPG");
+    image.save(localSave,"PNG");
 }
 
 void TcpController::sendImageNotProcess(Mat &frame)
@@ -109,7 +112,7 @@ void TcpController::sendImage(Mat &frame, int count, int port)
 void TcpController::setVariable()
 {
     defaulName = "Image_";
-    extension = ".jpg";
+    extension = ".png";
     count = 0;
     path = QCoreApplication::applicationDirPath() + "/Imagem";
     textName = QCoreApplication::applicationDirPath() + "/port.txt";
@@ -129,13 +132,18 @@ TcpServer *TcpController::searchTcpServer(int port)
 
 QByteArray TcpController::mat2ByteArray(Mat &image)
 {
-    QByteArray byteArray;
-    QDataStream stream( &byteArray, QIODevice::WriteOnly );
-    stream << image.type();
-    stream << image.rows;
-    stream << image.cols;
-    const size_t data_size = image.cols * image.rows * image.elemSize();
-    QByteArray data = QByteArray::fromRawData( (const char*)image.ptr(), data_size );
-    stream << data;
+      QByteArray byteArray;
+//    QDataStream stream( &byteArray, QIODevice::WriteOnly );
+//    stream << image.type();
+//    stream << image.rows;
+//    stream << image.cols;
+//    const size_t data_size = image.cols * image.rows * image.elemSize();
+//    QByteArray data = QByteArray::fromRawData( (const char*)image.ptr(), data_size );
+//    stream << data;
+    QImage i(image.data, image.cols, image.rows, image.step, QImage::Format_RGB32);
+    QBuffer buffer(&byteArray);
+    buffer.open(QIODevice::WriteOnly);
+    i.save(&buffer, "PNG");
+
     return byteArray;
 }

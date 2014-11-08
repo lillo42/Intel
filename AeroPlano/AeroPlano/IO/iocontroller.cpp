@@ -27,6 +27,11 @@ QString IOController::getImageName()
     return defaulName + QString::number(++count) + extension;
 }
 
+QString IOController::getImageNameNotProcess()
+{
+    return defaulNameNotProcess + QString::number(++countNotProcess) + extension;
+}
+
 Mat IOController::readImage(QString path)
 {
     return read.readImage(path.toStdString());
@@ -36,18 +41,24 @@ Mat IOController::readNextImage()
 {
 
     QString imagePath = path + "/" + defaulName+QString::number(count) + extension;
-    QImage image;
-    image.load(imagePath);
-    if(!image.isNull())
+    Mat retorno = imread(imagePath.toStdString().c_str(),CV_BGR2GRAY);
+    if(!retorno.empty())
         count++;
-    return cv::Mat(image.height(), image.width(),0, image.bits(), image.bytesPerLine());
+    return retorno;
+//    QImage image;
+//    image.load(imagePath);
+//    if(!image.isNull())
+//        count++;
+//    return cv::Mat(image.height(), image.width(),0, image.bits(), image.bytesPerLine());
 }
 
 void IOController::setVariable()
 {
     defaulName = "Image_";
-    extension = ".jpg";
+    extension = ".png";
     count = 0;
+    countNotProcess =0;
+    defaulNameNotProcess = "ImageP_";
     path = QCoreApplication::applicationDirPath() + "/Imagem";
 }
 

@@ -1,4 +1,4 @@
-#ifndef IMAGECONTROLLER_H
+    #ifndef IMAGECONTROLLER_H
 #define IMAGECONTROLLER_H
 
 #include <QObject>

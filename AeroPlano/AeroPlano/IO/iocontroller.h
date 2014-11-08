@@ -23,6 +23,7 @@ public:
     void addSave(Imagem frame);
 
     QString getImageName();
+    QString getImageNameNotProcess();
 
     Mat readImage(QString path);
     Mat readNextImage();
@@ -39,6 +40,9 @@ private:
     QString extension;
     QString path;
     int count;
+
+    QString defaulNameNotProcess;
+    int countNotProcess;
 
     void setVariable();
     void save(Imagem image);

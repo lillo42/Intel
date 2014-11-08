@@ -4,6 +4,7 @@ TcpServer::TcpServer(QObject *parent) :
     QObject(parent)
 {
     createServer();
+    conectado = false;
 }
 
 TcpServer::~TcpServer()
@@ -26,7 +27,8 @@ TcpServer::~TcpServer()
 void TcpServer::startServer(int port)
 {
     this->port = port;
-    if(server->listen(QHostAddress::Any,port))
+    QHostAddress ip("192.168.43.51");
+    if(server->listen(ip,port))
         qDebug() << "Open port: " << port;
     else
         qDebug() << "Fail to open port: " << port;
@@ -39,6 +41,8 @@ int TcpServer::getPort()
 
 void TcpServer::sendaData(QByteArray &array)
 {
+    if(!conectado)
+        return;
     if(socket->state() != QTcpSocket::ConnectedState)
         return;
     socket->write(array);
@@ -48,6 +52,8 @@ void TcpServer::sendaData(QByteArray &array)
 
 void TcpServer::newConnection()
 {
+    qDebug() << "Nova conexao";
+    conectado = true;
     socket = server->nextPendingConnection();
     connect(socket,SIGNAL(readyRead()),this,SLOT(readReady()));
     connect(socket,SIGNAL(disconnected()),this,SLOT(disconnected()));

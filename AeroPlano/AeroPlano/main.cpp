@@ -11,6 +11,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
     qRegisterMetaType<Imagem>("Imagem");
+    qRegisterMetaType< std::vector<Rect> >("vector<Rect>");
 
     ImageController *i = new ImageController();
     i->start();

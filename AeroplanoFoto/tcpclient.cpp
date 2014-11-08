@@ -9,6 +9,7 @@ TcpClient::TcpClient(QObject *parent) :
 void TcpClient::star(QString ip, int port)
 {
     socket->connectToHost(ip,port);
+    qDebug() << socket->state();
     socket->waitForConnected();
 }
 
@@ -25,7 +26,7 @@ void TcpClient::send(QImage image)
     QByteArray ba;
     QBuffer buffer(&ba);
     buffer.open(QIODevice::WriteOnly);
-    image.save(&buffer, "jpg");
+    image.save(&buffer, "PNG");
     send(ba);
 //    QImageWriter writer;
 //    writer.setDevice(socket);
