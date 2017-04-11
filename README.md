@@ -1,4 +1,4 @@
-Intel
+# Intel
 
 Estudo de técnicas de reconhecimentos de padrões para reconhecimento de pessoas através de um aeroplano. Foi desenvolvido dois software um para transmitir a imagem do aeroplano e outro para receber e processar as imagens, ambos os software foram desenvolvidos em Qt\C++ com a biblioteca OpenCV no sistema operacional Ubuntu.
 
